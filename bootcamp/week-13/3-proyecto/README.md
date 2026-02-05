@@ -1,4 +1,4 @@
-# 💬 Proyecto Semana 13: WebSocket y Comunicación en Tiempo Real
+# 📡 Proyecto Semana 13: API con WebSockets y Server-Sent Events
 
 ## 🏛️ Tu Dominio Asignado
 
@@ -6,15 +6,16 @@
 
 > ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
 
-### 💡 Ejemplos de Adaptación por Dominio
+### 💡 Ejemplo Genérico de Referencia
 
-| Dominio | Salas/Canales | Eventos en Tiempo Real | Notificaciones |
-|---------|--------------|------------------------|----------------|
-| 🍝 **Restaurante** | Mesas, Cocina | Nuevo pedido, Plato listo | Mesa servida |
-| 📚 **Biblioteca** | Secciones | Libro devuelto, Reserva disponible | Recordatorio vencimiento |
-| 🏥 **Clínica Veterinaria** | Consultorios, Espera | Turno llamado, Consulta finalizada | Próxima cita |
-| 💊 **Farmacia** | Mostrador, Bodega | Receta validada, Stock bajo | Pedido listo |
-| 🏋️ **Gimnasio** | Clases, Zonas | Clase iniciada, Equipo libre | Reserva confirmada |
+> Los ejemplos usan **"Warehouse"** (Almacén) que NO está en el pool.
+> **Debes adaptar TODO a tu dominio asignado.**
+
+| Concepto | Ejemplo Genérico | Adapta a tu Dominio |
+|----------|-----------------|---------------------|
+| Real-time Resource | `StockLevel` | `{YourRealtimeEntity}` |
+| Event Type | `stock_updated` | `{your_entity}_updated` |
+| Channel | `warehouse_zone_{id}` | `{your_channel}_{id}` |
 
 ---
 
@@ -22,10 +23,10 @@
 
 Implementar **comunicación en tiempo real**:
 
-- WebSocket para mensajes bidireccionales
-- Server-Sent Events (SSE) para notificaciones
-- Rooms/Canales para agrupación
-- Broadcast y mensajes privados
+- WebSockets para comunicación bidireccional
+- Server-Sent Events para notificaciones
+- Connection management
+- Broadcast a múltiples clientes
 
 ---
 
@@ -34,45 +35,226 @@ Implementar **comunicación en tiempo real**:
 ### WebSocket Manager
 
 ```python
+# Ejemplo genérico (Warehouse)
+from fastapi import WebSocket
+from dataclasses import dataclass, field
+import asyncio
+import json
+
+@dataclass
 class ConnectionManager:
-    def __init__(self):
-        self.active_connections: dict[str, list[WebSocket]] = {}  # room -> connections
+    """Gestiona conexiones WebSocket por zona"""
+    connections: dict[int, list[WebSocket]] = field(default_factory=dict)
     
-    async def connect(self, websocket: WebSocket, room: str):
+    async def connect(self, websocket: WebSocket, zone_id: int) -> None:
+        """Registra nueva conexión a una zona"""
         await websocket.accept()
-        if room not in self.active_connections:
-            self.active_connections[room] = []
-        self.active_connections[room].append(websocket)
+        if zone_id not in self.connections:
+            self.connections[zone_id] = []
+        self.connections[zone_id].append(websocket)
     
-    async def broadcast(self, message: str, room: str):
-        for connection in self.active_connections.get(room, []):
-            await connection.send_text(message)
+    def disconnect(self, websocket: WebSocket, zone_id: int) -> None:
+        """Elimina conexión de una zona"""
+        if zone_id in self.connections:
+            self.connections[zone_id].remove(websocket)
+            if not self.connections[zone_id]:
+                del self.connections[zone_id]
+    
+    async def broadcast_to_zone(self, zone_id: int, message: dict) -> None:
+        """Envía mensaje a todos los clientes de una zona"""
+        if zone_id in self.connections:
+            for connection in self.connections[zone_id]:
+                try:
+                    await connection.send_json(message)
+                except Exception:
+                    pass  # Cliente desconectado
+    
+    async def broadcast_all(self, message: dict) -> None:
+        """Envía mensaje a todos los clientes conectados"""
+        for zone_id in self.connections:
+            await self.broadcast_to_zone(zone_id, message)
+
+manager = ConnectionManager()
 ```
 
-### Endpoints WebSocket
+### WebSocket Endpoint
 
 ```python
-@app.websocket("/{domain}/{room}/ws")
-async def websocket_endpoint(websocket: WebSocket, room: str):
-    await manager.connect(websocket, room)
+# Ejemplo genérico
+from fastapi import WebSocket, WebSocketDisconnect
+
+@app.websocket("/ws/zones/{zone_id}")
+async def websocket_zone_updates(websocket: WebSocket, zone_id: int):
+    """WebSocket para actualizaciones de stock por zona"""
+    await manager.connect(websocket, zone_id)
+    
     try:
         while True:
-            data = await websocket.receive_text()
-            await manager.broadcast(f"{data}", room)
+            # Recibir mensajes del cliente
+            data = await websocket.receive_json()
+            
+            if data.get("type") == "request_stock":
+                # Cliente solicita stock actual
+                items = await item_service.get_by_zone(zone_id)
+                await websocket.send_json({
+                    "type": "stock_snapshot",
+                    "items": [item.model_dump() for item in items]
+                })
+            
+            elif data.get("type") == "update_quantity":
+                # Cliente actualiza cantidad
+                item_id = data["item_id"]
+                new_quantity = data["quantity"]
+                
+                updated = await item_service.update_quantity(item_id, new_quantity)
+                
+                # Broadcast a todos los clientes de esta zona
+                await manager.broadcast_to_zone(zone_id, {
+                    "type": "stock_updated",
+                    "item_id": item_id,
+                    "new_quantity": new_quantity,
+                    "updated_by": "operator"
+                })
+    
     except WebSocketDisconnect:
-        manager.disconnect(websocket, room)
+        manager.disconnect(websocket, zone_id)
 ```
 
 ### Server-Sent Events
 
 ```python
-@app.get("/{domain}/events")
-async def event_stream():
-    async def event_generator():
-        while True:
-            event = await get_next_event()  # Del dominio
-            yield f"data: {event.json()}\\n\\n"
-    return StreamingResponse(event_generator(), media_type="text/event-stream")
+# Ejemplo genérico
+from fastapi.responses import StreamingResponse
+from datetime import datetime
+import asyncio
+
+async def stock_event_generator(zone_id: int):
+    """Generador de eventos SSE para stock"""
+    last_check = datetime.utcnow()
+    
+    while True:
+        # Verificar cambios desde última revisión
+        changes = await item_service.get_changes_since(zone_id, last_check)
+        
+        if changes:
+            for change in changes:
+                event_data = {
+                    "type": "stock_change",
+                    "item_id": change.item_id,
+                    "old_quantity": change.old_quantity,
+                    "new_quantity": change.new_quantity,
+                    "timestamp": change.timestamp.isoformat()
+                }
+                yield f"event: stock_change\ndata: {json.dumps(event_data)}\n\n"
+            
+            last_check = datetime.utcnow()
+        
+        # Heartbeat cada 30 segundos
+        yield f"event: heartbeat\ndata: {datetime.utcnow().isoformat()}\n\n"
+        
+        await asyncio.sleep(5)  # Polling interval
+
+@app.get("/sse/zones/{zone_id}/stock")
+async def stock_sse_endpoint(zone_id: int):
+    """Endpoint SSE para actualizaciones de stock"""
+    return StreamingResponse(
+        stock_event_generator(zone_id),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+        }
+    )
+```
+
+### Event Broadcasting desde CRUD
+
+```python
+# Ejemplo genérico - Integración con operaciones CRUD
+class ItemService:
+    def __init__(
+        self,
+        repository: IItemRepository,
+        ws_manager: ConnectionManager
+    ):
+        self.repository = repository
+        self.ws_manager = ws_manager
+    
+    async def create(self, data: ItemCreate) -> Item:
+        item = await self.repository.save(Item(**data.model_dump()))
+        
+        # Notificar a clientes WebSocket
+        await self.ws_manager.broadcast_to_zone(item.zone_id, {
+            "type": "item_created",
+            "item": item.model_dump()
+        })
+        
+        return item
+    
+    async def update_quantity(self, item_id: int, quantity: int) -> Item:
+        item = await self.repository.find_by_id(item_id)
+        old_quantity = item.quantity
+        item.quantity = quantity
+        
+        updated = await self.repository.save(item)
+        
+        # Notificar cambio
+        await self.ws_manager.broadcast_to_zone(updated.zone_id, {
+            "type": "quantity_updated",
+            "item_id": item_id,
+            "old_quantity": old_quantity,
+            "new_quantity": quantity
+        })
+        
+        # Alerta si stock bajo
+        if quantity < 10:
+            await self.ws_manager.broadcast_all({
+                "type": "low_stock_alert",
+                "item_id": item_id,
+                "item_name": updated.name,
+                "current_quantity": quantity
+            })
+        
+        return updated
+```
+
+### Cliente JavaScript de Referencia
+
+```javascript
+// Ejemplo cliente WebSocket
+const socket = new WebSocket('ws://localhost:8000/ws/zones/1');
+
+socket.onopen = () => {
+    console.log('Connected to zone 1');
+    socket.send(JSON.stringify({ type: 'request_stock' }));
+};
+
+socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    switch(data.type) {
+        case 'stock_snapshot':
+            updateStockTable(data.items);
+            break;
+        case 'stock_updated':
+            updateItemRow(data.item_id, data.new_quantity);
+            break;
+        case 'low_stock_alert':
+            showAlert(`Low stock: ${data.item_name}`);
+            break;
+    }
+};
+
+// Ejemplo cliente SSE
+const eventSource = new EventSource('/sse/zones/1/stock');
+
+eventSource.addEventListener('stock_change', (e) => {
+    const data = JSON.parse(e.data);
+    console.log('Stock change:', data);
+});
+
+eventSource.addEventListener('heartbeat', (e) => {
+    console.log('Server alive:', e.data);
+});
 ```
 
 ---
@@ -83,12 +265,17 @@ async def event_stream():
 starter/
 ├── main.py
 ├── websocket/
-│   ├── manager.py       # ConnectionManager
-│   └── handlers.py      # Handlers por tipo de mensaje
+│   ├── __init__.py
+│   ├── manager.py
+│   ├── handlers.py
+│   └── events.py
 ├── sse/
-│   └── events.py        # SSE endpoints
-├── models/
-│   └── {entity}.py
+│   ├── __init__.py
+│   └── generators.py
+├── services/
+├── routers/
+├── static/           # HTML de prueba
+│   └── ws-client.html
 ├── pyproject.toml
 ├── Dockerfile
 └── docker-compose.yml
@@ -101,16 +288,16 @@ starter/
 | Criterio | Puntos |
 |----------|--------|
 | **Funcionalidad** (40%) | |
-| WebSocket con rooms | 15 |
-| SSE implementado | 15 |
-| Broadcast y privados | 10 |
+| WebSocket funciona | 15 |
+| SSE funciona | 15 |
+| Broadcasting correcto | 10 |
 | **Adaptación al Dominio** (35%) | |
-| Rooms coherentes con negocio | 12 |
-| Eventos específicos del dominio | 13 |
-| Originalidad (no copia) | 10 |
+| Eventos relevantes | 12 |
+| Canales específicos | 13 |
+| Originalidad (no copia ejemplo) | 10 |
 | **Calidad del Código** (25%) | |
-| Manager bien estructurado | 10 |
-| Manejo de desconexiones | 10 |
+| Connection management | 10 |
+| Manejo de errores | 10 |
 | Código limpio | 5 |
 | **Total** | **100** |
 
@@ -118,9 +305,9 @@ starter/
 
 ## ⚠️ Política Anticopia
 
-- ❌ **No uses** "Chat" genérico
-- ✅ **Diseña** canales según tu dominio
-- ✅ **Implementa** eventos de negocio reales
+- ❌ **No copies** los eventos "stock_updated/low_stock_alert"
+- ✅ **Diseña** eventos específicos de tu dominio
+- ✅ **Crea** canales relevantes para tu negocio
 
 ---
 
@@ -132,6 +319,6 @@ starter/
 
 ---
 
-**Tiempo estimado:** 2-3 horas
+**Tiempo estimado:** 3 horas
 
 [← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)

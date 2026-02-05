@@ -1,119 +1,87 @@
-# 🛒 Proyecto Semana 03: API de Catálogo con Búsqueda Avanzada
+# 🔍 Proyecto Semana 03: API de Catálogo con Búsqueda Avanzada
 
 ## 🏛️ Tu Dominio Asignado
 
 **Dominio**: `[El instructor te asignará tu dominio único]`
 
 > ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
-> Consulta tu asignación en el registro de la ficha.
 
-### 💡 Ejemplos de Adaptación por Dominio
+### 💡 Ejemplo Genérico de Referencia
 
-| Dominio | Entidad Catálogo | Categorías | Filtros Sugeridos |
-|---------|-----------------|------------|-------------------|
-| 🍝 **Restaurante** | Platillos | Entradas, Principales, Postres | price, vegetarian, spicy_level |
-| 📚 **Biblioteca** | Libros | Ficción, No Ficción, Académico | author, year, available |
-| 🏥 **Clínica Veterinaria** | Servicios | Consultas, Vacunas, Cirugías | species, duration, price |
-| 💊 **Farmacia** | Medicamentos | Analgésicos, Antibióticos, Vitaminas | requires_prescription, price, stock |
-| 🏋️ **Gimnasio** | Clases | Cardio, Fuerza, Flexibilidad | instructor, level, schedule |
+> Los ejemplos usan **"Warehouse"** (Almacén) que NO está en el pool.
+> **Debes adaptar TODO a tu dominio asignado.**
 
----
-
-## 📋 Descripción
-
-Construirás una **API completa para gestionar un catálogo** de tu dominio con categorías, incluyendo búsqueda avanzada, filtrado, paginación y ordenamiento.
+| Concepto | Ejemplo Genérico | Adapta a tu Dominio |
+|----------|-----------------|---------------------|
+| Categories | `Zone` | `{YourCategory}` |
+| Main Entity | `Item` | `{YourEntity}` |
+| Filters | `zone`, `min_stock`, `supplier` | `{your_filters}` |
 
 ---
 
-## 🎯 Objetivos
+## 🎯 Objetivo
 
-- ✅ Implementar CRUD completo de entidades y categorías
-- ✅ Crear búsqueda y filtrado avanzado
-- ✅ Implementar paginación con metadatos
-- ✅ Aplicar ordenamiento flexible
-- ✅ Combinar múltiples tipos de parámetros
+Construir una **API de catálogo** con búsqueda avanzada y filtros múltiples adaptada a tu dominio.
 
 ---
 
 ## 📦 Requisitos Funcionales (Adapta a tu Dominio)
 
-### 1. Categorías
+### Entidades
+
+**Category Entity:**
+```python
+# Ejemplo genérico (Warehouse - Zone)
+Zone:
+    id: int
+    code: str          # A, B, C...
+    name: str          # "Electronics", "Food"...
+    max_capacity: int
+    is_climate_controlled: bool
+```
+
+**Main Entity:**
+```python
+# Ejemplo genérico (Warehouse - Item)
+Item:
+    id: int
+    sku: str
+    name: str
+    zone_id: int       # FK to Zone
+    quantity: int
+    min_stock: int
+    supplier: str
+    is_active: bool
+```
+
+### Search Filters (Mínimo 6)
+
+```python
+# Ejemplo genérico (Warehouse)
+GET /items/?zone=A&min_stock_gte=10&supplier=ACME&is_active=true&sort_by=quantity&order=desc
+```
+
+| Filtro | Tipo | Descripción |
+|--------|------|-------------|
+| `zone` | str | Filtrar por zona |
+| `min_stock_gte` | int | Stock mínimo >= valor |
+| `quantity_lte` | int | Cantidad <= valor |
+| `supplier` | str | Filtrar por proveedor |
+| `is_active` | bool | Solo activos/inactivos |
+| `search` | str | Búsqueda en name/sku |
+| `sort_by` | str | Campo de ordenamiento |
+| `order` | str | asc/desc |
+
+### Endpoints
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `/categories` | Listar todas las categorías |
-| GET | `/categories/{id}` | Obtener una categoría |
-| POST | `/categories` | Crear categoría |
-| PUT | `/categories/{id}` | Actualizar categoría |
-| DELETE | `/categories/{id}` | Eliminar categoría |
-
-### 2. Entidades del Catálogo
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/{entidades}` | Listar con filtros |
-| GET | `/{entidades}/{id}` | Obtener una entidad |
-| POST | `/{entidades}` | Crear entidad |
-| PUT | `/{entidades}/{id}` | Actualizar entidad |
-| PATCH | `/{entidades}/{id}` | Actualizar parcialmente |
-| DELETE | `/{entidades}/{id}` | Eliminar entidad |
-
-**Ejemplos de rutas:**
-- Restaurante: `/dishes`, `/dishes/1`
-- Biblioteca: `/books`, `/books/1`
-- Gimnasio: `/classes`, `/classes/1`
-
-### 3. Filtrado y Búsqueda (Diseña según tu dominio)
-
-El endpoint GET debe soportar **mínimo 6 filtros**:
-
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `search` | string | Buscar en nombre y descripción |
-| `category_id` | int | Filtrar por categoría |
-| `min_{campo}` | number | Mínimo de campo numérico |
-| `max_{campo}` | number | Máximo de campo numérico |
-| `{booleano}` | bool | Filtro booleano del dominio |
-| `tags` | list[str] | Filtrar por tags |
-
-**Ejemplos por dominio:**
-```bash
-# Restaurante
-GET /dishes?search=pasta&category_id=1&min_price=100&vegetarian=true
-
-# Biblioteca
-GET /books?search=python&category_id=2&available=true&min_year=2020
-
-# Gimnasio
-GET /classes?category_id=1&instructor=María&level=beginner
-```
-
-### 4. Paginación
-
-| Parámetro | Default | Descripción |
-|-----------|---------|-------------|
-| `page` | 1 | Número de página |
-| `per_page` | 10 | Items por página (máx 50) |
-
-Respuesta paginada:
-```json
-{
-  "items": [...],
-  "total": 100,
-  "page": 1,
-  "per_page": 10,
-  "pages": 10,
-  "has_next": true,
-  "has_prev": false
-}
-```
-
-### 5. Ordenamiento
-
-| Parámetro | Valores | Default |
-|-----------|---------|---------|
-| `sort_by` | name, {campo}, created_at | name |
-| `order` | asc, desc | asc |
+| GET | `/zones/` | Listar categorías |
+| POST | `/zones/` | Crear categoría |
+| GET | `/items/` | Listar con filtros |
+| GET | `/items/search` | Búsqueda full-text |
+| GET | `/items/stats` | Estadísticas por categoría |
+| GET | `/zones/{id}/items` | Items de una zona |
 
 ---
 
@@ -121,14 +89,17 @@ Respuesta paginada:
 
 ```
 starter/
-├── main.py           # Punto de entrada
+├── main.py
+├── models/
+│   ├── category.py
+│   └── entity.py
+├── schemas/
+│   ├── category.py
+│   ├── entity.py
+│   └── filters.py
 ├── routers/
-│   ├── __init__.py
-│   ├── categories.py # Rutas de categorías
-│   └── {entidad}.py  # Rutas de tu entidad
-├── schemas.py        # Modelos Pydantic
-├── database.py       # Base de datos simulada
-├── dependencies.py   # Dependencias reutilizables
+│   ├── categories.py
+│   └── entities.py
 ├── pyproject.toml
 ├── Dockerfile
 └── docker-compose.yml
@@ -141,41 +112,36 @@ starter/
 | Criterio | Puntos |
 |----------|--------|
 | **Funcionalidad** (40%) | |
-| CRUD completo de categorías | 10 |
-| CRUD completo de entidad | 15 |
-| Filtrado con 6+ parámetros | 15 |
+| CRUD categorías + entidades | 15 |
+| Filtros funcionan (6+) | 15 |
+| Búsqueda y estadísticas | 10 |
 | **Adaptación al Dominio** (35%) | |
-| Entidad coherente con dominio | 12 |
-| Filtros específicos del negocio | 13 |
-| Originalidad (no copia) | 10 |
+| Filtros coherentes con negocio | 12 |
+| Categorías específicas | 13 |
+| Originalidad (no copia ejemplo) | 10 |
 | **Calidad del Código** (25%) | |
-| Paginación con metadatos | 10 |
-| Ordenamiento flexible | 8 |
-| Código limpio y modular | 7 |
+| Schemas de filtros limpios | 10 |
+| Query parameters bien tipados | 10 |
+| Código limpio | 5 |
 | **Total** | **100** |
 
 ---
 
 ## ⚠️ Política Anticopia
 
-Este proyecto debe reflejar **tu dominio único asignado**:
-
-- ❌ **No uses** "productos" genéricos
-- ❌ **No copies** filtros de otros dominios
-- ✅ **Diseña** categorías específicas de tu negocio
-- ✅ **Implementa** filtros relevantes para tu contexto
-
-> 💡 Dos proyectos con las mismas entidades/filtros serán evaluados como **copia**.
+- ❌ **No copies** el ejemplo genérico "Warehouse/Zone/Item"
+- ✅ **Diseña** filtros específicos de tu dominio
+- ✅ **Crea** categorías únicas para tu negocio
 
 ---
 
 ## 📚 Recursos
 
-- [FastAPI Query Parameters](https://fastapi.tiangolo.com/tutorial/query-params/)
+- [Query Parameters](https://fastapi.tiangolo.com/tutorial/query-params/)
 - [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
 
 ---
 
-**Tiempo estimado:** 2 horas
+**Tiempo estimado:** 2-3 horas
 
 [← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)

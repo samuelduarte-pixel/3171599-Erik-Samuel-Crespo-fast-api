@@ -7,15 +7,17 @@
 > ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
 > Consulta tu asignación en el registro de la ficha.
 
-### 💡 Ejemplos de Adaptación por Dominio
+### 💡 Ejemplo Genérico de Referencia
 
-| Dominio | Entidad Principal | Endpoint de Bienvenida | Endpoint de Info |
-|---------|------------------|------------------------|------------------|
-| 🍝 **Restaurante** | Platillo | `GET /cliente/{nombre}` | `GET /platillo/{nombre}/info` |
-| 📚 **Biblioteca** | Libro | `GET /lector/{nombre}` | `GET /libro/{titulo}/info` |
-| 🏥 **Clínica Veterinaria** | Mascota | `GET /cliente/{nombre}` | `GET /mascota/{nombre}/info` |
-| 💊 **Farmacia** | Medicamento | `GET /cliente/{nombre}` | `GET /medicamento/{nombre}/info` |
-| 🏋️ **Gimnasio** | Miembro | `GET /miembro/{nombre}` | `GET /clase/{nombre}/info` |
+> Los ejemplos usan un dominio genérico **"Warehouse"** (Almacén) que NO está en el pool de asignación.
+> **Debes adaptar TODO a tu dominio asignado.**
+
+| Concepto | Ejemplo Genérico | Adapta a tu Dominio |
+|----------|-----------------|---------------------|
+| Main Entity | `Item` | `{YourEntity}` |
+| Welcome Endpoint | `GET /visitor/{name}` | `GET /{your_actor}/{name}` |
+| Info Endpoint | `GET /item/{code}/info` | `GET /{your_entity}/{id}/info` |
+| Service Endpoint | `GET /service/schedule` | `GET /service/schedule` |
 
 ---
 
@@ -44,69 +46,50 @@ Al completar este proyecto, habrás demostrado que puedes:
 
 ## 📦 Requisitos Funcionales (Adapta a tu Dominio)
 
-### RF-01: Endpoint de Información de la API
+### RF-01: API Information Endpoint
 - **Ruta**: `GET /`
 - **Descripción**: Retorna información de tu API adaptada al dominio
-- **Respuesta**: `{"name": "[Tu Dominio] API", "version": "1.0.0", "domain": "[tu-dominio]"}`
+- **Respuesta**: `{"name": "[Your Domain] API", "version": "1.0.0", "domain": "[your-domain]"}`
 
-**Ejemplos por dominio:**
+**Ejemplo genérico (Warehouse):**
 ```json
-// Restaurante
-{"name": "Restaurante Italiano API", "version": "1.0.0", "domain": "restaurante"}
-
-// Biblioteca
-{"name": "Biblioteca Municipal API", "version": "1.0.0", "domain": "biblioteca"}
-
-// Gimnasio
-{"name": "FitGym API", "version": "1.0.0", "domain": "gimnasio"}
+{"name": "Warehouse Inventory API", "version": "1.0.0", "domain": "warehouse"}
 ```
 
-### RF-02: Bienvenida Personalizada
-- **Ruta**: `GET /{entidad}/{nombre}`
+### RF-02: Personalized Welcome
+- **Ruta**: `GET /{actor}/{name}`
 - **Descripción**: Mensaje de bienvenida personalizado para tu dominio
 - **Parámetros**: 
-  - `nombre` (path): Nombre de la persona/entidad
+  - `name` (path): Nombre de la persona/entidad
   - `language` (query, default="es"): Idioma del mensaje (es, en, fr)
 
-**Ejemplos por dominio:**
+**Ejemplo genérico (Warehouse):**
 ```bash
-# Restaurante
-GET /cliente/Carlos?language=es
-→ {"message": "¡Bienvenido a nuestro restaurante, Carlos!"}
+GET /visitor/Carlos?language=es
+→ {"message": "¡Bienvenido al almacén, Carlos!"}
 
-# Biblioteca  
-GET /lector/Ana?language=en
-→ {"message": "Welcome to the library, Ana!"}
-
-# Gimnasio
-GET /miembro/Pedro?language=es
-→ {"message": "¡Bienvenido al gimnasio, Pedro!"}
+GET /visitor/Ana?language=en
+→ {"message": "Welcome to the warehouse, Ana!"}
 ```
 
-### RF-03: Información de Entidad
-- **Ruta**: `GET /{entidad}/{nombre}/info`
+### RF-03: Entity Information
+- **Ruta**: `GET /{entity}/{identifier}/info`
 - **Descripción**: Información detallada de una entidad de tu dominio
 - **Parámetros**:
-  - `nombre` (path): Nombre/identificador
+  - `identifier` (path): Nombre/código/ID
   - `detail_level` (query, default="basic"): Nivel de detalle (basic, full)
 
-**Ejemplos por dominio:**
+**Ejemplo genérico (Warehouse):**
 ```bash
-# Restaurante - información de platillo
-GET /platillo/lasagna/info?detail_level=full
-→ {"name": "Lasagna", "category": "pasta", "price": 180.00}
+GET /item/SKU-001/info?detail_level=basic
+→ {"code": "SKU-001", "name": "Widget A", "stock": 150}
 
-# Biblioteca - información de libro
-GET /libro/quijote/info?detail_level=basic
-→ {"title": "Don Quijote", "available": true}
-
-# Gimnasio - información de clase
-GET /clase/yoga/info?detail_level=full
-→ {"name": "Yoga", "instructor": "María", "capacity": 20}
+GET /item/SKU-001/info?detail_level=full
+→ {"code": "SKU-001", "name": "Widget A", "stock": 150, "location": "A-12", "supplier": "ACME"}
 ```
 
-### RF-04: Servicio/Acción según Horario
-- **Ruta**: `GET /servicio/horario`
+### RF-04: Time-Based Service
+- **Ruta**: `GET /service/schedule`
 - **Descripción**: Respuesta diferente según la hora del día
 - **Parámetros**:
   - `hour` (query): Hora del día (0-23)
@@ -115,25 +98,19 @@ GET /clase/yoga/info?detail_level=full
   - 12-17: Mensaje de tarde
   - 18-23 o 0-5: Mensaje de noche
 
-**Ejemplos por dominio:**
+**Ejemplo genérico (Warehouse):**
 ```bash
-# Restaurante
-GET /servicio/horario?hour=8
-→ {"message": "Servimos desayuno", "available": ["huevos", "café"]}
+GET /service/schedule?hour=8
+→ {"message": "Morning shift - Receiving active", "available": ["receiving", "inventory"]}
 
-# Biblioteca
-GET /servicio/horario?hour=10
-→ {"message": "Horario matutino - Sala de lectura abierta"}
-
-# Gimnasio
-GET /servicio/horario?hour=7
-→ {"message": "Clases matutinas", "classes": ["yoga", "spinning"]}
+GET /service/schedule?hour=14
+→ {"message": "Afternoon shift - Shipping active", "available": ["shipping", "picking"]}
 ```
 
 ### RF-05: Health Check
 - **Ruta**: `GET /health`
 - **Descripción**: Estado de la API
-- **Respuesta**: `{"status": "healthy", "domain": "[tu-dominio]"}`
+- **Respuesta**: `{"status": "healthy", "domain": "[your-domain]"}`
 
 ---
 
@@ -166,8 +143,8 @@ cd bootcamp/week-01/3-proyecto/starter
 
 Abre `src/main.py` y completa los TODOs adaptándolos a tu dominio:
 
-1. **TODO 1**: Crear FastAPI con nombre de tu dominio
-2. **TODO 2**: Implementar endpoint raíz
+1. **TODO 1**: Crear FastAPI app con nombre de tu dominio
+2. **TODO 2**: Implementar endpoint raíz con info del dominio
 3. **TODO 3**: Implementar bienvenida personalizada
 4. **TODO 4**: Implementar información de entidad
 5. **TODO 5**: Implementar servicio según horario
@@ -199,38 +176,35 @@ Visita `http://localhost:8000/docs`
 | Información de entidad con niveles | 10 |
 | Servicio según horario | 12 |
 | **Adaptación al Dominio** (35%) | |
-| Coherencia con dominio asignado | 15 |
-| Entidades correctamente modeladas | 10 |
-| Originalidad (no copia) | 10 |
+| Endpoints coherentes con el negocio | 12 |
+| Nombres y rutas específicas | 13 |
+| Originalidad (no copia del ejemplo) | 10 |
 | **Calidad del Código** (25%) | |
-| Type hints correctos | 8 |
-| Documentación en `/docs` | 10 |
-| Código limpio y comentado | 7 |
+| Type hints correctos | 10 |
+| Código limpio y documentado | 10 |
+| Docker funciona | 5 |
 | **Total** | **100** |
 
 ---
 
 ## ⚠️ Política Anticopia
 
-Este proyecto debe reflejar **tu dominio único asignado**:
-
-- ❌ **No copies** el código de otros aprendices
-- ❌ **No uses** un dominio diferente al asignado
-- ✅ **Adapta** todos los conceptos a tu contexto
-- ✅ **Personaliza** mensajes, entidades y lógica
-
-> 💡 Si dos proyectos tienen código idéntico, ambos serán evaluados como **copia**.
+- ❌ **No copies** el ejemplo genérico "Warehouse"
+- ❌ **No uses** dominios de otros compañeros
+- ✅ **Adapta** completamente a tu dominio asignado
+- ✅ **Demuestra** comprensión de los conceptos
 
 ---
 
 ## 📚 Recursos
 
-- [Teoría: Introducción a FastAPI](../1-teoria/05-intro-fastapi.md)
-- [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [Path Parameters](https://fastapi.tiangolo.com/tutorial/path-params/)
+- [Query Parameters](https://fastapi.tiangolo.com/tutorial/query-params/)
+- [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
 
 ---
 
-**Tiempo estimado:** 1.5-2 horas
+**Tiempo estimado:** 2 horas
 
 [← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)

@@ -5,144 +5,121 @@
 **Dominio**: `[El instructor te asignará tu dominio único]`
 
 > ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
-> Consulta tu asignación en el registro de la ficha.
 
-### 💡 Ejemplos de Adaptación por Dominio
+### 💡 Ejemplo Genérico de Referencia
 
-| Dominio | Entidad Principal | Estados | Acciones Especiales |
-|---------|------------------|---------|---------------------|
-| 🍝 **Restaurante** | Orden | pending, preparing, ready, delivered | mark_preparing, mark_ready |
-| 📚 **Biblioteca** | Préstamo | active, overdue, returned | extend, mark_returned |
-| 🏥 **Clínica Veterinaria** | Cita | scheduled, in_progress, completed, cancelled | start, complete, cancel |
-| 💊 **Farmacia** | Venta | pending, paid, delivered | process_payment, deliver |
-| 🏋️ **Gimnasio** | Reservación | booked, confirmed, completed, no_show | confirm, check_in |
+> Los ejemplos usan **"Warehouse"** (Almacén) que NO está en el pool.
+> **Debes adaptar TODO a tu dominio asignado.**
 
----
-
-## 📋 Descripción
-
-Construirás una **API REST completa** para gestionar una entidad de tu dominio aplicando todo lo aprendido sobre responses, status codes, manejo de errores y documentación OpenAPI.
+| Concepto | Ejemplo Genérico | Adapta a tu Dominio |
+|----------|-----------------|---------------------|
+| Main Entity | `StockTransfer` | `{YourEntity}` |
+| States | `pending, in_transit, completed, cancelled` | `{your_states}` |
+| Actions | `dispatch, receive, cancel` | `{your_actions}` |
 
 ---
 
-## 🎯 Objetivos
+## 🎯 Objetivo
 
-Al completar este proyecto serás capaz de:
-
-- ✅ Diseñar response models que protejan datos sensibles
-- ✅ Usar status codes HTTP correctos para cada operación
-- ✅ Implementar manejo de errores consistente y profesional
-- ✅ Documentar APIs con OpenAPI de forma completa
-- ✅ Crear una API lista para producción
+Construir una **API REST completa** aplicando responses, status codes, manejo de errores y documentación OpenAPI.
 
 ---
 
-## 📝 Requerimientos Funcionales (Adapta a tu Dominio)
+## 📦 Requisitos Funcionales (Adapta a tu Dominio)
 
-### Entidad Principal
-
-Diseña una entidad con **mínimo 10 campos** incluyendo estados y timestamps:
+### Entity with States (Mínimo 10 campos)
 
 ```python
-# Ejemplo para Restaurante (Orden)
-Order:
-    id: int (auto-generado)
-    table_number: int (1-50)
-    customer_name: str (2-100 caracteres)
-    items: list[OrderItem]
-    status: OrderStatus (pending, preparing, ready, delivered)
-    priority: Priority (low, normal, high)
-    notes: str | None (máx 500)
-    total: float (calculado)
+# Ejemplo genérico (Warehouse - StockTransfer)
+class TransferStatus(str, Enum):
+    PENDING = "pending"
+    IN_TRANSIT = "in_transit"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+
+StockTransfer:
+    id: int
+    transfer_code: str      # Unique: TRF-YYYYMMDD-XXX
+    origin_zone: str
+    destination_zone: str
+    item_id: int
+    quantity: int
+    status: TransferStatus
+    requested_by: str
+    notes: str | None
     created_at: datetime
-    updated_at: datetime | None
+    dispatched_at: datetime | None
     completed_at: datetime | None
-
-# Ejemplo para Biblioteca (Préstamo)
-Loan:
-    id: int (auto-generado)
-    book_id: int
-    member_id: int
-    status: LoanStatus (active, overdue, returned)
-    due_date: date
-    return_date: date | None
-    extensions: int (máx 2)
-    fine_amount: float (calculado)
-    created_at: datetime
-    updated_at: datetime | None
 ```
 
-### Endpoints Requeridos (Adapta rutas)
+### State Transitions
 
-| Método | Endpoint | Descripción | Status Code |
-|--------|----------|-------------|-------------|
-| GET | `/{entidades}` | Listar con filtros | 200 |
-| GET | `/{entidades}/{id}` | Obtener por ID | 200 / 404 |
-| POST | `/{entidades}` | Crear nueva entidad | 201 |
-| PUT | `/{entidades}/{id}` | Actualizar completa | 200 / 404 |
-| PATCH | `/{entidades}/{id}/status` | Cambiar estado | 200 / 404 / 400 |
-| DELETE | `/{entidades}/{id}` | Eliminar | 204 / 404 |
-| GET | `/{entidades}/stats` | Estadísticas | 200 |
+```python
+# Ejemplo genérico (Warehouse)
+# pending → in_transit (dispatch)
+# in_transit → completed (receive)
+# pending/in_transit → cancelled (cancel)
 
-**Ejemplos de rutas por dominio:**
-- Restaurante: `/orders`, `/orders/1/status`, `/orders/stats`
-- Biblioteca: `/loans`, `/loans/1/status`, `/loans/stats`
-- Gimnasio: `/reservations`, `/reservations/1/check-in`
+@app.post("/transfers/{id}/dispatch")
+async def dispatch_transfer(id: int) -> TransferResponse:
+    # Cambiar de pending → in_transit
+    ...
 
-### Filtros para Listado
-
-- `status`: filtrar por estado
-- `{campo_secundario}`: filtro específico de tu dominio
-- `skip`: paginación (offset)
-- `limit`: paginación (máximo 100)
-
----
-
-## 🔒 Response Models
-
-Debes crear schemas separados para:
-
-1. **{Entity}Create**: Para crear (sin id, timestamps)
-2. **{Entity}Update**: Para actualizar (todos opcionales)
-3. **{Entity}Response**: Para respuestas (sin campos internos)
-4. **{Entity}ListResponse**: Para listados con paginación
-5. **{Entity}Stats**: Para estadísticas de tu dominio
-
----
-
-## ⚠️ Manejo de Errores
-
-Implementa errores consistentes con este formato:
-
-```json
-{
-  "error": {
-    "code": "ENTITY_NOT_FOUND",
-    "message": "No se encontró la entidad con ID 123",
-    "details": {"entity_id": 123}
-  }
-}
+@app.post("/transfers/{id}/receive")
+async def receive_transfer(id: int) -> TransferResponse:
+    # Cambiar de in_transit → completed
+    ...
 ```
 
-### Errores Requeridos (Adapta a tu dominio)
+### Response Models
 
-| Código | HTTP Status | Cuándo usarlo |
-|--------|-------------|---------------|
-| `{ENTITY}_NOT_FOUND` | 404 | Entidad no existe |
-| `INVALID_STATUS_TRANSITION` | 400 | Cambio de estado inválido |
-| `{ENTITY}_ALREADY_EXISTS` | 409 | Duplicado |
-| `VALIDATION_ERROR` | 422 | Datos inválidos |
+```python
+# Ejemplo genérico
+class TransferResponse(BaseModel):
+    """Response sin datos sensibles"""
+    id: int
+    transfer_code: str
+    status: TransferStatus
+    # NO incluir: requested_by (interno)
+
+class TransferDetailResponse(TransferResponse):
+    """Response completo para admin"""
+    requested_by: str
+    notes: str | None
+```
+
+### Error Handling
+
+```python
+class TransferNotFoundError(HTTPException):
+    def __init__(self, transfer_id: int):
+        super().__init__(
+            status_code=404,
+            detail=f"Transfer {transfer_id} not found"
+        )
+
+class InvalidTransitionError(HTTPException):
+    def __init__(self, current: str, target: str):
+        super().__init__(
+            status_code=400,
+            detail=f"Cannot transition from {current} to {target}"
+        )
+```
 
 ---
 
-## 🏗️ Estructura del Proyecto
+## 🗂️ Estructura del Proyecto
 
 ```
 starter/
-├── main.py            # Archivo principal
-├── models.py          # Schemas Pydantic
-├── database.py        # Simulación de DB
-├── exceptions.py      # Excepciones personalizadas
+├── main.py
+├── models.py
+├── schemas/
+│   ├── request.py
+│   └── response.py
+├── exceptions.py
+├── routers/
+│   └── transfers.py
 ├── pyproject.toml
 ├── Dockerfile
 └── docker-compose.yml
@@ -155,43 +132,37 @@ starter/
 | Criterio | Puntos |
 |----------|--------|
 | **Funcionalidad** (40%) | |
-| Endpoints CRUD completos | 15 |
-| Transiciones de estado | 10 |
-| Estadísticas funcionando | 8 |
-| Status codes correctos | 7 |
-| **Adaptación al Dominio** (35%) | |
-| Entidad coherente con dominio | 12 |
-| Estados y transiciones lógicas | 13 |
-| Originalidad (no copia) | 10 |
-| **Calidad del Código** (25%) | |
-| Response models correctos | 10 |
+| CRUD + transiciones de estado | 15 |
+| Status codes correctos | 15 |
 | Manejo de errores consistente | 10 |
-| Documentación OpenAPI | 5 |
+| **Adaptación al Dominio** (35%) | |
+| Estados coherentes con negocio | 12 |
+| Transiciones lógicas | 13 |
+| Originalidad (no copia ejemplo) | 10 |
+| **Calidad del Código** (25%) | |
+| Response models bien diseñados | 10 |
+| Documentación OpenAPI completa | 10 |
+| Código limpio | 5 |
 | **Total** | **100** |
 
 ---
 
 ## ⚠️ Política Anticopia
 
-Este proyecto debe reflejar **tu dominio único asignado**:
-
-- ❌ **No uses** "Task" o "Tarea" genérica
-- ❌ **No copies** estados de otros dominios
-- ✅ **Diseña** estados lógicos para tu negocio
-- ✅ **Implementa** transiciones válidas
-
-> 💡 Si dos proyectos tienen las mismas entidades/estados, ambos serán evaluados como **copia**.
+- ❌ **No copies** el ejemplo genérico "StockTransfer"
+- ✅ **Diseña** estados específicos de tu dominio
+- ✅ **Crea** transiciones lógicas para tu negocio
 
 ---
 
 ## 📚 Recursos
 
-- [FastAPI Response Model](https://fastapi.tiangolo.com/tutorial/response-model/)
-- [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+- [Response Model](https://fastapi.tiangolo.com/tutorial/response-model/)
+- [Handling Errors](https://fastapi.tiangolo.com/tutorial/handling-errors/)
 - [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
 
 ---
 
-**Tiempo estimado:** 2 horas
+**Tiempo estimado:** 2-3 horas
 
 [← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)

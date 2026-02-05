@@ -6,15 +6,16 @@
 
 > ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
 
-### 💡 Ejemplos de Adaptación por Dominio
+### 💡 Ejemplo Genérico de Referencia
 
-| Dominio | Entidad A | Entidad B | Relación N:M |
-|---------|----------|----------|--------------|
-| 🍝 **Restaurante** | Platillo | Ingrediente | Platillos tienen muchos ingredientes |
-| 📚 **Biblioteca** | Libro | Categoría | Libros pertenecen a muchas categorías |
-| 🏥 **Clínica Veterinaria** | Mascota | Servicio | Mascotas reciben muchos servicios |
-| 💊 **Farmacia** | Medicamento | Proveedor | Medicamentos de muchos proveedores |
-| 🏋️ **Gimnasio** | Miembro | Clase | Miembros asisten a muchas clases |
+> Los ejemplos usan **"Warehouse"** (Almacén) que NO está en el pool.
+> **Debes adaptar TODO a tu dominio asignado.**
+
+| Concepto | Ejemplo Genérico | Adapta a tu Dominio |
+|----------|-----------------|---------------------|
+| Entity A | `Item` | `{YourEntityA}` |
+| Entity B | `Tag` | `{YourEntityB}` |
+| N:M Relation | Items have many Tags | `{your_nm_relation}` |
 
 ---
 
@@ -31,41 +32,70 @@ Construir una **API con arquitectura por capas** implementando:
 
 ## 📦 Requisitos Funcionales (Adapta a tu Dominio)
 
-### Entidades (Mínimo 3: 2 principales + tabla intermedia)
+### Entities (Mínimo 3: 2 principales + tabla intermedia)
 
 ```python
-# Ejemplo: Platillo-Ingrediente
-{EntityA}:           # Platillo
-    id, name, description, price, category
-    ingredients: list[{EntityB}]  # Relación N:M
+# Ejemplo genérico (Warehouse)
+class Item(Base):
+    __tablename__ = "items"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    sku: Mapped[str] = mapped_column(unique=True)
+    name: Mapped[str]
+    
+    # N:M relationship
+    tags: Mapped[list["Tag"]] = relationship(
+        secondary="item_tags", back_populates="items"
+    )
 
-{EntityB}:           # Ingrediente  
-    id, name, unit, cost_per_unit
-    dishes: list[{EntityA}]  # Relación inversa
+class Tag(Base):
+    __tablename__ = "tags"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(unique=True)
+    color: Mapped[str]
+    
+    # N:M inverse
+    items: Mapped[list["Item"]] = relationship(
+        secondary="item_tags", back_populates="tags"
+    )
 
-{EntityA}{EntityB}:  # Tabla intermedia (dish_ingredients)
-    {entity_a}_id, {entity_b}_id
-    quantity: float  # Campo extra en relación
+# Association table
+item_tags = Table(
+    "item_tags", Base.metadata,
+    Column("item_id", ForeignKey("items.id"), primary_key=True),
+    Column("tag_id", ForeignKey("tags.id"), primary_key=True),
+    Column("assigned_at", DateTime, default=datetime.utcnow),
+)
 ```
 
-### Arquitectura por Capas
+### Service Layer
 
+```python
+# Ejemplo genérico
+class ItemService:
+    def __init__(self, db: Session):
+        self.db = db
+    
+    async def add_tag_to_item(self, item_id: int, tag_id: int) -> Item:
+        """Agrega un tag a un item (lógica de negocio)"""
+        item = await self._get_item(item_id)
+        tag = await self._get_tag(tag_id)
+        
+        if tag in item.tags:
+            raise TagAlreadyAssignedError(item_id, tag_id)
+        
+        item.tags.append(tag)
+        await self.db.commit()
+        return item
 ```
-Routers (Controllers) → Services → Repositories → Models
-         ↓                  ↓             ↓
-     Schemas           Business      SQLAlchemy
-     (DTOs)             Logic         Queries
-```
 
-### Endpoints Requeridos
+### Endpoints
 
-| Método | Endpoint | Service Method |
-|--------|----------|----------------|
-| GET | `/{entidades_a}` | `service.get_all()` |
-| GET | `/{entidades_a}/{id}` | `service.get_by_id()` |
-| POST | `/{entidades_a}` | `service.create()` |
-| POST | `/{entidades_a}/{id}/{entidades_b}` | `service.add_relation()` |
-| DELETE | `/{entidades_a}/{id}/{entidades_b}/{id_b}` | `service.remove_relation()` |
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/items/{id}/tags/{tag_id}` | Agregar tag a item |
+| DELETE | `/items/{id}/tags/{tag_id}` | Quitar tag de item |
+| GET | `/items/{id}/tags` | Listar tags de un item |
+| GET | `/tags/{id}/items` | Listar items con un tag |
 
 ---
 
@@ -76,16 +106,13 @@ starter/
 ├── main.py
 ├── database.py
 ├── models/
-│   ├── {entity_a}.py
-│   ├── {entity_b}.py
-│   └── associations.py   # Tabla N:M
+│   ├── item.py
+│   ├── tag.py
+│   └── associations.py
 ├── schemas/
-│   ├── {entity_a}.py
-│   └── {entity_b}.py
-├── services/             # ← Capa de negocio
-│   ├── __init__.py
-│   ├── {entity_a}_service.py
-│   └── {entity_b}_service.py
+├── services/
+│   ├── item_service.py
+│   └── tag_service.py
 ├── routers/
 ├── pyproject.toml
 ├── Dockerfile
@@ -99,16 +126,16 @@ starter/
 | Criterio | Puntos |
 |----------|--------|
 | **Funcionalidad** (40%) | |
-| Relación N:M funcional | 15 |
-| CRUD completo | 15 |
-| Eager loading implementado | 10 |
+| Relación N:M funciona | 15 |
+| Service Layer implementado | 15 |
+| Endpoints de asociación | 10 |
 | **Adaptación al Dominio** (35%) | |
-| Entidades coherentes | 12 |
-| Relación lógica para el negocio | 13 |
-| Originalidad (no copia) | 10 |
+| Relación N:M coherente | 12 |
+| Lógica de negocio en services | 13 |
+| Originalidad (no copia ejemplo) | 10 |
 | **Calidad del Código** (25%) | |
-| Service Layer implementado | 12 |
-| Separación de responsabilidades | 8 |
+| Separación de capas clara | 10 |
+| Eager loading correcto | 10 |
 | Código limpio | 5 |
 | **Total** | **100** |
 
@@ -116,8 +143,8 @@ starter/
 
 ## ⚠️ Política Anticopia
 
-- ❌ **No uses** "Blog/Post/Tag" genéricos
-- ✅ **Diseña** relaciones específicas de tu dominio
+- ❌ **No copies** el ejemplo genérico "Item/Tag"
+- ✅ **Diseña** una relación N:M de tu dominio
 - ✅ **Implementa** lógica de negocio real
 
 ---
@@ -129,6 +156,6 @@ starter/
 
 ---
 
-**Tiempo estimado:** 2.5 horas
+**Tiempo estimado:** 3 horas
 
 [← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)
