@@ -88,17 +88,17 @@ bootcamp/week-XX/
 
 | Tecnología | Versión | Uso |
 |------------|---------|-----|
-| Python | **3.13+** | Lenguaje principal |
-| FastAPI | **0.115+** | Framework web |
-| Pydantic | **2.10+** | Validación de datos |
-| SQLAlchemy | **2.0+** | ORM (sync y async) |
-| Alembic | **1.14+** | Migraciones de BD |
-| SQLite | **3.47+** | Desarrollo y testing |
+| Python | **3.14+** | Lenguaje principal |
+| FastAPI | **0.128+** | Framework web |
+| Pydantic | **2.12+** | Validación de datos |
+| SQLAlchemy | **2.0.46+** | ORM (sync y async) |
+| Alembic | **1.15+** | Migraciones de BD |
+| SQLite | **3.48+** | Desarrollo y testing |
 | PostgreSQL | **17+** | Producción |
-| pytest | **8.3+** | Testing |
-| Docker | **27+** | Containerización |
-| Docker Compose | **2.31+** | Orquestación |
-| uv | **0.5+** | Gestión de paquetes |
+| pytest | **8.4+** | Testing |
+| Docker | **27.5+** | Containerización |
+| Docker Compose | **2.32+** | Orquestación |
+| uv | **0.6+** | Gestión de paquetes |
 
 **Entorno de desarrollo**: Docker + docker compose (❌ NO instalar Python localmente)
 

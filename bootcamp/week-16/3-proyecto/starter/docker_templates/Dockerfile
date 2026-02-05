@@ -12,7 +12,7 @@
 # ============================================
 # STAGE 1: Builder
 # ============================================
-FROM python:3.13-slim AS builder
+FROM python:3.14-slim AS builder
 
 # Evitar .pyc y buffering
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -33,7 +33,7 @@ RUN uv sync --frozen --no-dev
 # ============================================
 # STAGE 2: Production
 # ============================================
-FROM python:3.13-slim AS production
+FROM python:3.14-slim AS production
 
 # Variables de entorno
 ENV PYTHONDONTWRITEBYTECODE=1 \

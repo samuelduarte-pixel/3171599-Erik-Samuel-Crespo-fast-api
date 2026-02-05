@@ -11,11 +11,11 @@
 # TODO 1: Stage Builder
 # ============================================
 # Crea el stage builder que:
-# - Use python:3.13-slim como base
+# - Use python:3.14-slim como base
 # - Configure variables de entorno (PYTHONDONTWRITEBYTECODE, PYTHONUNBUFFERED)
 # - Instale dependencias en un virtualenv
 #
-# FROM python:3.13-slim AS builder
+# FROM python:3.14-slim AS builder
 #
 # ENV PYTHONDONTWRITEBYTECODE=1 \
 #     PYTHONUNBUFFERED=1
@@ -33,11 +33,11 @@
 # TODO 2: Stage Runtime
 # ============================================
 # Crea el stage runtime que:
-# - Use python:3.13-slim como base
+# - Use python:3.14-slim como base
 # - Copie el virtualenv del builder
 # - Copie el código fuente
 #
-# FROM python:3.13-slim AS runtime
+# FROM python:3.14-slim AS runtime
 #
 # ENV PYTHONDONTWRITEBYTECODE=1 \
 #     PYTHONUNBUFFERED=1 \

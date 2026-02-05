@@ -8,27 +8,27 @@ Este documento define las versiones oficiales de todas las tecnologías usadas e
 
 | Tecnología | Versión Mínima | Versión Recomendada | Notas |
 |------------|----------------|---------------------|-------|
-| Python | 3.12 | **3.13** | Última estable |
-| Docker | 27.0 | **27.4+** | Container runtime |
-| Docker Compose | 2.30 | **2.31+** | Plugin v2 |
+| Python | 3.13 | **3.14** | Última estable (Feb 2026) |
+| Docker | 27.0 | **27.5+** | Container runtime |
+| Docker Compose | 2.31 | **2.32+** | Plugin v2 |
 
 ## 🚀 Framework y Librerías Core
 
 | Paquete | Versión | Propósito |
 |---------|---------|-----------|
-| `fastapi` | **0.115+** | Framework web |
-| `uvicorn[standard]` | **0.34+** | Servidor ASGI |
-| `pydantic` | **2.10+** | Validación de datos |
-| `pydantic-settings` | **2.7+** | Configuración |
+| `fastapi` | **0.128+** | Framework web |
+| `uvicorn[standard]` | **0.40+** | Servidor ASGI |
+| `pydantic` | **2.12+** | Validación de datos |
+| `pydantic-settings` | **2.8+** | Configuración |
 
 ## 🗄️ Base de Datos
 
 | Paquete | Versión | Propósito |
 |---------|---------|-----------|
-| `sqlalchemy` | **2.0+** | ORM (sync y async) |
-| `alembic` | **1.14+** | Migraciones |
-| `aiosqlite` | **0.20+** | SQLite async |
-| `asyncpg` | **0.30+** | PostgreSQL async |
+| `sqlalchemy` | **2.0.46+** | ORM (sync y async) |
+| `alembic` | **1.15+** | Migraciones |
+| `aiosqlite` | **0.21+** | SQLite async |
+| `asyncpg` | **0.31+** | PostgreSQL async |
 
 ### Motores de BD
 
@@ -49,19 +49,19 @@ Este documento define las versiones oficiales de todas las tecnologías usadas e
 
 | Paquete | Versión | Propósito |
 |---------|---------|-----------|
-| `pytest` | **8.3+** | Framework de testing |
-| `pytest-asyncio` | **0.24+** | Tests async |
-| `httpx` | **0.28+** | Cliente HTTP para tests |
-| `pytest-cov` | **6.0+** | Coverage |
+| `pytest` | **8.4+** | Framework de testing |
+| `pytest-asyncio` | **0.26+** | Tests async |
+| `httpx` | **0.29+** | Cliente HTTP para tests |
+| `pytest-cov` | **6.1+** | Coverage |
 
 ## 🛠️ Herramientas de Desarrollo
 
 | Herramienta | Versión | Propósito |
 |-------------|---------|-----------|
-| `uv` | **0.5+** | Gestor de paquetes |
-| `ruff` | **0.8+** | Linter + Formatter |
-| `mypy` | **1.13+** | Type checking |
-| `pre-commit` | **4.0+** | Git hooks |
+| `uv` | **0.6+** | Gestor de paquetes |
+| `ruff` | **0.9+** | Linter + Formatter |
+| `mypy` | **1.17+** | Type checking |
+| `pre-commit` | **4.1+** | Git hooks |
 
 ## 📋 pyproject.toml Base
 
@@ -70,33 +70,33 @@ Este documento define las versiones oficiales de todas las tecnologías usadas e
 name = "bc-fastapi-weekXX"
 version = "0.1.0"
 description = "FastAPI Bootcamp - Week XX"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
-    "fastapi>=0.115.0",
-    "uvicorn[standard]>=0.34.0",
-    "pydantic>=2.10.0",
-    "pydantic-settings>=2.7.0",
-    "sqlalchemy>=2.0.0",
-    "alembic>=1.14.0",
-    "aiosqlite>=0.20.0",
+    "fastapi>=0.128.0",
+    "uvicorn[standard]>=0.40.0",
+    "pydantic>=2.12.0",
+    "pydantic-settings>=2.8.0",
+    "sqlalchemy>=2.0.46",
+    "alembic>=1.15.0",
+    "aiosqlite>=0.21.0",
     "python-jose[cryptography]>=3.3.0",
     "passlib[bcrypt]>=1.7.4",
-    "python-multipart>=0.0.18",
+    "python-multipart>=0.0.20",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.3.0",
-    "pytest-asyncio>=0.24.0",
-    "httpx>=0.28.0",
-    "pytest-cov>=6.0.0",
-    "ruff>=0.8.0",
-    "mypy>=1.13.0",
-    "pre-commit>=4.0.0",
+    "pytest>=8.4.0",
+    "pytest-asyncio>=0.26.0",
+    "httpx>=0.29.0",
+    "pytest-cov>=6.1.0",
+    "ruff>=0.9.0",
+    "mypy>=1.17.0",
+    "pre-commit>=4.1.0",
 ]
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py314"
 line-length = 88
 
 [tool.ruff.lint]
@@ -107,14 +107,14 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 strict = true
 ```
 
 ## 🐳 Dockerfile Base
 
 ```dockerfile
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 # Metadata
 LABEL maintainer="EPTI Dev"
@@ -181,7 +181,7 @@ volumes:
 Las versiones se actualizan:
 - **Mensualmente**: Revisión de parches de seguridad
 - **Por release mayor**: Evaluación de breaking changes
-- **Fecha última actualización**: Diciembre 2025
+- **Fecha última actualización**: Febrero 2026
 
 ## ✅ Verificación de Versiones
 

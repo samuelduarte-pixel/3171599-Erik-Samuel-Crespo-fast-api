@@ -10,8 +10,8 @@ Este es un **Bootcamp de FastAPI Zero to Hero** estructurado para llevar a estud
 - **Dedicación semanal**: 6 horas
 - **Total de horas**: ~96 horas
 - **Nivel de salida**: Desarrollador Backend Junior (FastAPI)
-- **Enfoque**: FastAPI moderno con Python 3.13+
-- **Stack**: FastAPI 0.115+, SQLAlchemy 2.x, Pydantic 2.10+, SQLite/PostgreSQL 17+, Docker 27+
+- **Enfoque**: FastAPI moderno con Python 3.14+
+- **Stack**: FastAPI 0.128+, SQLAlchemy 2.0.46+, Pydantic 2.12+, SQLite/PostgreSQL 17+, Docker 27.5+
 
 ---
 
@@ -594,7 +594,7 @@ Cuando trabajes en este proyecto:
 
 ### Generación de Código
 
-1. **Usa siempre sintaxis Python moderna (3.13+)**
+1. **Usa siempre sintaxis Python moderna (3.14+)**
 
    - Type hints obligatorios
    - Match statements cuando aplique
@@ -602,6 +602,7 @@ Cuando trabajes en este proyecto:
    - Walrus operator cuando simplifique
    - Union types con `|` en lugar de `Union[]`
    - Genéricos nativos (`list[str]` en lugar de `List[str]`)
+   - Soporte completo para PEP 695 (type alias syntax)
 
 2. **Entorno de Desarrollo con Docker**
 
@@ -650,7 +651,7 @@ Cuando trabajes en este proyecto:
    - En Dockerfile:
 
      ```dockerfile
-     FROM python:3.13-slim
+     FROM python:3.14-slim
      
      ENV PYTHONDONTWRITEBYTECODE=1 \
          PYTHONUNBUFFERED=1 \
@@ -664,7 +665,7 @@ Cuando trabajes en este proyecto:
      
      COPY . .
      EXPOSE 8000
-     CMD ["uv", "run", "fastapi", "dev", "src/main.py", "--host", "0.0.0.0", "--port", "8000"]
+     CMD ["uv", "run", "fastapi", "run", "src/main.py", "--host", "0.0.0.0", "--port", "8000"]
      ```
 
    - Comandos uv (dentro del contenedor):
@@ -813,5 +814,5 @@ Cuando crees contenido para una nueva semana:
 
 ---
 
-_Última actualización: Diciembre 2025_
-_Versión: 1.0_
+_Última actualización: Febrero 2026_
+_Versión: 1.1_

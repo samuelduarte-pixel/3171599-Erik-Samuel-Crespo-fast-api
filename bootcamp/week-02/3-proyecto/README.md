@@ -63,7 +63,7 @@ Contact:
 ### Validaciones Obligatorias
 
 - [ ] Email debe ser único (error 409 si ya existe)
-- [ ] Teléfono debe normalizarse al formato `+52 XXX XXX XXXX`
+- [ ] Teléfono debe normalizarse al formato `+57 XXX XXX XXXX`
 - [ ] Tags deben estar en minúsculas sin duplicados
 - [ ] Nombres deben capitalizarse automáticamente
 

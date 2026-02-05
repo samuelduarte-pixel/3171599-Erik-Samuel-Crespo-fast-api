@@ -9,10 +9,10 @@
 # PASO 1: Imagen Base
 # ============================================
 # FROM especifica la imagen base desde la cual construir
-# python:3.13-slim es una versión reducida de Python (~150MB)
+# python:3.14-slim es una versión reducida de Python (~150MB)
 # Descomenta la siguiente línea:
 
-# FROM python:3.13-slim
+# FROM python:3.14-slim
 
 
 # ============================================

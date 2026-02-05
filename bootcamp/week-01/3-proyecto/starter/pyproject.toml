@@ -7,8 +7,8 @@ name = "greeting-api"
 version = "1.0.0"
 description = "API de Saludo - Proyecto Semana 01"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 
 dependencies = [
-    "fastapi[standard]>=0.115.0",
+    "fastapi[standard]>=0.128.0",
 ]

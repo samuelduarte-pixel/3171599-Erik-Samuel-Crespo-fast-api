@@ -6,16 +6,16 @@ Este documento especifica las versiones y configuración Docker para el bootcamp
 
 | Tecnología | Versión | Notas |
 |------------|---------|-------|
-| **Python** | 3.13+ | Última versión estable |
-| **FastAPI** | 0.115+ | Última versión |
-| **Pydantic** | 2.10+ | Pydantic v2 |
-| **SQLAlchemy** | 2.0+ | Async support |
-| **Alembic** | 1.14+ | Migraciones |
-| **uv** | 0.5+ | Gestor de paquetes |
-| **Docker** | 27+ | Container runtime |
-| **Docker Compose** | 2.31+ | Orquestación |
+| **Python** | 3.14+ | Última versión estable |
+| **FastAPI** | 0.128+ | Última versión |
+| **Pydantic** | 2.12+ | Pydantic v2 (soporte Python 3.14) |
+| **SQLAlchemy** | 2.0.46+ | Async support |
+| **Alembic** | 1.15+ | Migraciones |
+| **uv** | 0.6+ | Gestor de paquetes |
+| **Docker** | 27.5+ | Container runtime |
+| **Docker Compose** | 2.32+ | Orquestación |
 | **PostgreSQL** | 17+ | Producción |
-| **SQLite** | 3.47+ | Desarrollo/Testing |
+| **SQLite** | 3.48+ | Desarrollo/Testing |
 
 ## 🚀 ¿Por qué Docker?
 
@@ -146,10 +146,10 @@ docker compose build --no-cache
 
 ### Imagen Base
 
-Usamos `python:3.13-slim` porque:
+Usamos `python:3.14-slim` porque:
 - Imagen oficial de Python
 - Versión slim (más pequeña, sin extras innecesarios)
-- Python 3.13 con las últimas características
+- Python 3.14 con las últimas características
 
 ## 📝 Variables de Entorno
 

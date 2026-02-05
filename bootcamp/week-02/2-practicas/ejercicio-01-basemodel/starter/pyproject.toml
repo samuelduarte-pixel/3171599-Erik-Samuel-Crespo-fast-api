@@ -2,9 +2,9 @@
 name = "ejercicio-01-basemodel"
 version = "0.1.0"
 description = "Ejercicio: BaseModel Básico"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
-    "pydantic>=2.10",
+    "pydantic>=2.12",
 ]
 
 [tool.uv]
