@@ -1,157 +1,156 @@
-# 🧪 Proyecto: Test Suite Completo
+# 🧪 Proyecto Semana 12: Test Suite Completo con pytest
 
-## 📋 Descripción
+## 🏛️ Tu Dominio Asignado
 
-En este proyecto crearás una **suite de tests completa** para una API de gestión de tareas (Task Manager). La API ya está implementada, tu trabajo es escribir los tests que garanticen su correcto funcionamiento.
+**Dominio**: `[El instructor te asignará tu dominio único]`
 
----
+> ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
 
-## 🎯 Objetivos
+### 💡 Ejemplos de Adaptación por Dominio
 
-- Implementar tests unitarios para services
-- Implementar tests de integración para endpoints
-- Crear fixtures reutilizables en conftest.py
-- Usar mocking para dependencias externas
-- Alcanzar >80% de cobertura de código
-
----
-
-## 📁 Estructura del Proyecto
-
-```
-3-proyecto/
-├── README.md
-├── starter/                    # 👈 Tu código aquí
-│   ├── pyproject.toml
-│   ├── src/
-│   │   ├── __init__.py
-│   │   ├── main.py            # API FastAPI (ya implementada)
-│   │   ├── database.py        # Configuración BD
-│   │   ├── models.py          # Modelos SQLAlchemy
-│   │   ├── schemas.py         # Schemas Pydantic
-│   │   ├── services.py        # Lógica de negocio
-│   │   ├── auth.py            # Autenticación
-│   │   └── notifications.py   # Servicio de notificaciones
-│   └── tests/
-│       ├── __init__.py
-│       ├── conftest.py        # TODO: Crear fixtures
-│       ├── unit/
-│       │   ├── __init__.py
-│       │   └── test_services.py   # TODO: Tests unitarios
-│       └── integration/
-│           ├── __init__.py
-│           └── test_api.py        # TODO: Tests de integración
-└── solution/                   # Solución (solo instructores)
-```
+| Dominio | Entidad a Testear | Edge Cases | Validaciones |
+|---------|------------------|------------|--------------|
+| 🍝 **Restaurante** | Order | Empty cart, Invalid table | Price > 0, Quantity > 0 |
+| 📚 **Biblioteca** | Loan | Expired loan, Max loans | Valid ISBN, Member active |
+| 🏥 **Clínica Veterinaria** | Appointment | Past date, Overlapping | Valid pet_id, Vet available |
+| 💊 **Farmacia** | Sale | Invalid prescription | Stock available, Valid dose |
+| 🏋️ **Gimnasio** | Membership | Expired plan, Frozen | Valid dates, Plan exists |
 
 ---
 
-## 🚀 Instrucciones
+## 🎯 Objetivo
 
-### Paso 1: Configurar el proyecto
+Implementar **testing completo** para tu API:
 
-```bash
-cd starter
-uv sync
-```
-
-### Paso 2: Explorar la API
-
-Revisa los archivos en `src/` para entender la API:
-
-- **main.py**: Endpoints de la API
-- **models.py**: Modelos Task y User
-- **services.py**: Lógica de negocio (TaskService)
-- **notifications.py**: Servicio de notificaciones (mockear)
-
-### Paso 3: Implementar fixtures (conftest.py)
-
-Crea las fixtures necesarias:
-
-- `db_session`: Sesión de BD de prueba
-- `client`: TestClient con BD override
-- `test_user`: Usuario de prueba
-- `auth_headers`: Headers con token
-- `test_task`: Tarea de prueba
-
-### Paso 4: Implementar tests unitarios
-
-En `tests/unit/test_services.py`:
-
-- Tests para `TaskService.create_task()`
-- Tests para `TaskService.get_tasks()`
-- Tests para `TaskService.update_task()`
-- Tests para `TaskService.complete_task()`
-- Tests para `TaskService.delete_task()`
-
-### Paso 5: Implementar tests de integración
-
-En `tests/integration/test_api.py`:
-
-- Tests para todos los endpoints CRUD
-- Tests de autenticación
-- Tests de permisos (solo dueño puede modificar)
-- Tests de errores (404, 422, 401, 403)
-
-### Paso 6: Verificar cobertura
-
-```bash
-uv run pytest --cov=src --cov-report=html --cov-fail-under=80
-```
+- Unit tests (services, utilities)
+- Integration tests (endpoints)
+- Fixtures y factories
+- Cobertura mínima 80%
 
 ---
 
-## 📊 API Endpoints
+## 📦 Requisitos Funcionales (Adapta a tu Dominio)
 
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| POST | `/auth/register` | Registrar usuario | No |
-| POST | `/auth/token` | Login | No |
-| GET | `/users/me` | Usuario actual | Sí |
-| GET | `/tasks/` | Listar tareas | Sí |
-| POST | `/tasks/` | Crear tarea | Sí |
-| GET | `/tasks/{id}` | Obtener tarea | Sí |
-| PUT | `/tasks/{id}` | Actualizar tarea | Sí |
-| PATCH | `/tasks/{id}/complete` | Marcar completada | Sí |
-| DELETE | `/tasks/{id}` | Eliminar tarea | Sí |
+### Estructura de Tests
+
+```
+tests/
+├── conftest.py              # Fixtures globales
+├── factories.py             # Factories para test data
+├── unit/
+│   ├── test_services.py     # Tests de lógica de negocio
+│   └── test_validators.py   # Tests de validaciones
+└── integration/
+    ├── test_auth.py         # Tests de autenticación
+    └── test_{entities}.py   # Tests de endpoints CRUD
+```
+
+### Fixtures
+
+```python
+# conftest.py
+@pytest.fixture
+def {entity}_factory():
+    def create_{entity}(**kwargs):
+        defaults = {
+            # Valores por defecto del dominio
+        }
+        defaults.update(kwargs)
+        return {Entity}Create(**defaults)
+    return create_{entity}
+
+@pytest.fixture
+async def test_client():
+    async with AsyncClient(app=app, base_url="http://test") as client:
+        yield client
+```
+
+### Tests por Tipo
+
+```python
+# Unit Test
+def test_{entity}_validation():
+    # Probar validaciones Pydantic del dominio
+    with pytest.raises(ValidationError):
+        {Entity}Create(invalid_field="bad_value")
+
+# Integration Test
+@pytest.mark.asyncio
+async def test_create_{entity}(test_client, {entity}_factory):
+    data = {entity}_factory().model_dump()
+    response = await test_client.post("/{entities}/", json=data)
+    assert response.status_code == 201
+```
+
+### Cobertura Mínima
+
+| Componente | Cobertura Requerida |
+|------------|---------------------|
+| Services | 90% |
+| Routers | 80% |
+| Models | 70% |
+| **Total** | **80%** |
+
+---
+
+## 🗂️ Estructura del Proyecto
+
+```
+starter/
+├── src/
+│   ├── main.py
+│   ├── models/
+│   ├── schemas/
+│   ├── services/
+│   └── routers/
+├── tests/
+│   ├── conftest.py
+│   ├── factories.py
+│   ├── unit/
+│   └── integration/
+├── pyproject.toml
+├── Dockerfile
+└── docker-compose.yml
+```
 
 ---
 
 ## ✅ Criterios de Evaluación
 
-### Tests Requeridos (mínimo)
-
-- [ ] 5+ tests unitarios para TaskService
-- [ ] 10+ tests de integración para endpoints
-- [ ] Tests de autenticación (401)
-- [ ] Tests de permisos (403)
-- [ ] Tests de validación (422)
-- [ ] Tests de not found (404)
-
-### Calidad
-
-- [ ] Fixtures organizadas en conftest.py
-- [ ] Mocking de NotificationService
-- [ ] Nombres descriptivos de tests
-- [ ] Sin código duplicado (DRY)
-
-### Cobertura
-
-- [ ] >80% cobertura total
-- [ ] 100% cobertura de services.py
-- [ ] Reporte HTML generado
+| Criterio | Puntos |
+|----------|--------|
+| **Funcionalidad** (40%) | |
+| Unit tests completos | 15 |
+| Integration tests completos | 15 |
+| Cobertura >= 80% | 10 |
+| **Adaptación al Dominio** (35%) | |
+| Factories coherentes | 12 |
+| Edge cases del dominio | 13 |
+| Originalidad (no copia) | 10 |
+| **Calidad del Código** (25%) | |
+| Fixtures bien estructuradas | 10 |
+| Tests aislados e independientes | 10 |
+| Código limpio | 5 |
+| **Total** | **100** |
 
 ---
 
-## 📝 Entregables
+## ⚠️ Política Anticopia
 
-1. `tests/conftest.py` con fixtures
-2. `tests/unit/test_services.py` con tests unitarios
-3. `tests/integration/test_api.py` con tests de integración
-4. Screenshot de cobertura >80%
+- ❌ **No uses** tests genéricos sin contexto
+- ✅ **Diseña** casos de prueba específicos
+- ✅ **Implementa** edge cases de tu dominio
 
 ---
 
-## ⏱️ Tiempo Estimado
+## 📚 Recursos
 
-90 minutos
+- [pytest Documentation](https://docs.pytest.org/)
+- [pytest-asyncio](https://pytest-asyncio.readthedocs.io/)
+- [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
+
+---
+
+**Tiempo estimado:** 3 horas
+
+[← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)

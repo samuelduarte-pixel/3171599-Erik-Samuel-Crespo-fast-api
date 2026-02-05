@@ -1,313 +1,151 @@
-# 🏆 Proyecto Final: API Completa Lista para Producción
+# 🏆 Proyecto Semana 16: API Completa Lista para Producción
 
-## 📋 Descripción
+## 🏛️ Tu Dominio Asignado
 
-Este es tu **proyecto final del bootcamp**. Construirás una API RESTful completa desde cero, aplicando todo lo aprendido durante las 16 semanas.
+**Dominio**: `[El instructor te asignará tu dominio único]`
 
-El proyecto debe demostrar tu dominio de:
-- FastAPI y Python moderno
-- Arquitectura limpia
-- Autenticación y seguridad
-- Testing
-- Docker y CI/CD
-- Documentación profesional
+> ⚠️ **IMPORTANTE**: Este proyecto final integra TODO lo aprendido en 16 semanas aplicado a tu dominio único.
 
----
+### 💡 Ejemplos de Proyecto Final por Dominio
 
-## 🎯 Objetivos
-
-1. Construir una API funcional y bien estructurada
-2. Implementar autenticación JWT completa
-3. Escribir tests con buena cobertura
-4. Containerizar con Docker
-5. Desplegar a producción
-6. Documentar profesionalmente
+| Dominio | Entidades (4+) | Features Clave |
+|---------|---------------|----------------|
+| 🍝 **Restaurante** | Menu, Dish, Order, Table, Chef | Pedidos en tiempo real, RBAC (chef/waiter/manager) |
+| 📚 **Biblioteca** | Book, Member, Loan, Reservation, Author | Préstamos con vencimiento, notificaciones |
+| 🏥 **Clínica Veterinaria** | Pet, Owner, Vet, Appointment, MedicalRecord | Historial médico, agenda por veterinario |
+| 💊 **Farmacia** | Medicine, Prescription, Sale, Supplier, Stock | Control de inventario, recetas validadas |
+| 🏋️ **Gimnasio** | Member, Class, Trainer, Membership, Attendance | Reservas de clases, seguimiento de asistencia |
 
 ---
 
-## ⏱️ Tiempo Estimado
+## 🎯 Objetivo
 
-~7 horas de trabajo efectivo (distribuidas en la semana)
+Construir una **API RESTful completa** que demuestre dominio de:
 
----
-
-## 📊 Opciones de Proyecto
-
-Elige **UNA** opción. Todas tienen requisitos equivalentes.
-
-### Opción A: Task Management API (Recomendada)
-
-**Tema**: Sistema de gestión de tareas y proyectos
-
-**Entidades**:
-| Entidad | Descripción |
-|---------|-------------|
-| User | Usuarios del sistema |
-| Project | Proyectos que contienen tareas |
-| Task | Tareas asignables a usuarios |
-| Label | Etiquetas para categorizar tareas |
-
-**Relaciones**:
-- User 1:N Projects (un usuario tiene muchos proyectos)
-- Project 1:N Tasks (un proyecto tiene muchas tareas)
-- Task N:1 User (una tarea puede asignarse a un usuario)
-- Task N:M Labels (muchos a muchos)
-
-### Opción B: E-commerce API
-
-**Tema**: Tienda online con carrito y pedidos
-
-**Entidades**:
-| Entidad | Descripción |
-|---------|-------------|
-| User | Clientes y administradores |
-| Product | Productos de la tienda |
-| Category | Categorías de productos |
-| Order | Pedidos de clientes |
-| OrderItem | Items dentro de un pedido |
-
-### Opción C: Blog API
-
-**Tema**: Plataforma de blogging
-
-**Entidades**:
-| Entidad | Descripción |
-|---------|-------------|
-| User | Autores del blog |
-| Post | Artículos publicados |
-| Category | Categorías de posts |
-| Tag | Etiquetas de posts |
-| Comment | Comentarios en posts |
-
-### Opción D: Proyecto Propio
-
-Propón tu idea (debe aprobarse). Requisitos mínimos:
-- 4+ entidades con relaciones
-- Complejidad similar a las opciones anteriores
+- Arquitectura limpia (Domain → Application → Infrastructure)
+- Autenticación JWT + RBAC
+- Testing con >50% cobertura
+- Docker + CI/CD
+- Documentación OpenAPI
 
 ---
 
-## ✅ Requisitos Obligatorios
+## 📦 Requisitos Obligatorios (Adapta a tu Dominio)
 
-### 1. Arquitectura (20 pts)
+### Arquitectura
 
 ```
 src/
-├── main.py              # Entry point
-├── config.py            # Settings con Pydantic
-├── database.py          # Configuración de DB
-├── models/              # Modelos SQLAlchemy
-├── schemas/             # Schemas Pydantic
-├── repositories/        # Capa de acceso a datos
-├── services/            # Lógica de negocio
-├── routers/             # Endpoints API
-├── dependencies/        # Dependencies de FastAPI
-├── exceptions/          # Excepciones personalizadas
-└── utils/               # Utilidades
+├── domain/
+│   ├── entities/         # Entidades del dominio
+│   ├── value_objects/    # VOs específicos
+│   └── exceptions.py
+├── application/
+│   ├── use_cases/        # Casos de uso
+│   ├── dtos/
+│   └── ports/            # Interfaces
+├── infrastructure/
+│   ├── api/              # FastAPI routers
+│   ├── persistence/      # SQLAlchemy repos
+│   └── auth/             # JWT, OAuth2
+└── main.py
 ```
 
-- [ ] Separación clara de capas
-- [ ] Inyección de dependencias
-- [ ] Código limpio y organizado
+### Entidades Mínimas (4+)
 
-### 2. Autenticación y Autorización (20 pts)
+```python
+# Ejemplo para Restaurante
+class Dish(Entity):      # Entidad principal
+class Order(AggregateRoot):  # Aggregate con lógica
+class Table(Entity):     # Entidad secundaria
+class Chef(Entity):      # Usuario con rol
 
-**Endpoints requeridos**:
-```
-POST /api/v1/auth/register   - Registro de usuario
-POST /api/v1/auth/login      - Login (retorna tokens)
-POST /api/v1/auth/refresh    - Renovar access token
-GET  /api/v1/auth/me         - Usuario actual
-```
-
-- [ ] JWT con access y refresh tokens
-- [ ] Passwords hasheados (bcrypt)
-- [ ] Roles: admin, user
-- [ ] Protección de endpoints por rol
-
-### 3. CRUD Completo (20 pts)
-
-Para cada entidad principal:
-```
-GET    /api/v1/{resource}        - Listar (con paginación)
-POST   /api/v1/{resource}        - Crear
-GET    /api/v1/{resource}/{id}   - Obtener uno
-PUT    /api/v1/{resource}/{id}   - Actualizar
-DELETE /api/v1/{resource}/{id}   - Eliminar
+# Ejemplo para Biblioteca
+class Book(Entity):
+class Loan(AggregateRoot):
+class Member(Entity):
+class Author(Entity):
 ```
 
-- [ ] Validación de inputs con Pydantic
-- [ ] Manejo de errores consistente
-- [ ] Paginación en listados
-- [ ] Filtros básicos
+### Autenticación y RBAC
 
-### 4. Testing (15 pts)
+- Registro y login con JWT
+- Access + Refresh tokens
+- Mínimo 3 roles específicos del dominio
+- Protección de endpoints por rol
 
-- [ ] Tests de endpoints principales
-- [ ] Tests de autenticación
-- [ ] Fixtures reutilizables
-- [ ] Coverage > 50%
+### Testing
 
-### 5. Docker y CI/CD (15 pts)
+- Unit tests para servicios/use cases
+- Integration tests para endpoints
+- Cobertura mínima: **50%**
 
-- [ ] Dockerfile funcional
-- [ ] docker-compose.yml con API + DB
-- [ ] GitHub Actions: lint + test
-- [ ] Health checks
+### DevOps
 
-### 6. Documentación (10 pts)
-
-- [ ] README completo
-- [ ] OpenAPI documentado
-- [ ] Variables de entorno en .env.example
-- [ ] Instrucciones de instalación
+- Dockerfile multi-stage
+- docker-compose.yml funcional
+- GitHub Actions CI pipeline
 
 ---
 
-## 📁 Estructura del Proyecto
+## ✅ Criterios de Evaluación
 
-```
-proyecto-final/
-├── .github/
-│   └── workflows/
-│       └── ci.yml           # GitHub Actions
-├── src/
-│   ├── __init__.py
-│   ├── main.py
-│   ├── config.py
-│   ├── database.py
-│   ├── models/
-│   ├── schemas/
-│   ├── repositories/
-│   ├── services/
-│   ├── routers/
-│   ├── dependencies/
-│   ├── exceptions/
-│   └── utils/
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py
-│   └── test_*.py
-├── alembic/                  # Migraciones
-├── .env.example
-├── .gitignore
-├── Dockerfile
-├── docker-compose.yml
-├── pyproject.toml
-├── README.md
-└── alembic.ini
-```
+| Criterio | Puntos |
+|----------|--------|
+| **Funcionalidad** (35%) | |
+| CRUD completo 4+ entidades | 15 |
+| JWT + RBAC funcional | 12 |
+| Testing >50% coverage | 8 |
+| **Adaptación al Dominio** (35%) | |
+| Entidades coherentes con negocio | 12 |
+| Lógica de dominio significativa | 13 |
+| Originalidad total (no copia) | 10 |
+| **Arquitectura y Código** (20%) | |
+| Arquitectura limpia | 10 |
+| Código limpio y documentado | 10 |
+| **DevOps** (10%) | |
+| Docker funcional | 5 |
+| CI/CD pasando | 5 |
+| **Total** | **100** |
 
 ---
 
-## 🚀 Pasos Sugeridos
+## ⚠️ Política Anticopia
 
-### Día 1-2: Setup y Modelos
+> **ATENCIÓN**: Este es el proyecto final. La originalidad es CRÍTICA.
 
-1. Crear estructura de carpetas
-2. Configurar Docker y docker-compose
-3. Definir modelos SQLAlchemy
-4. Configurar Alembic y crear migraciones
-5. Crear schemas Pydantic
+- ❌ **Copia detectada = Reprobación automática**
+- ❌ **No uses** Task Manager, Blog, E-commerce genéricos
+- ✅ **Implementa** tu dominio asignado completamente
+- ✅ **Demuestra** comprensión, no solo código funcional
 
-### Día 3-4: Autenticación y CRUD
+### Verificación de Originalidad
 
-1. Implementar registro y login
-2. Configurar JWT
-3. Crear dependencies de auth
-4. Implementar CRUD de entidades
-5. Agregar paginación
-
-### Día 5: Testing
-
-1. Configurar pytest
-2. Crear fixtures en conftest.py
-3. Tests de auth
-4. Tests de CRUD
-5. Verificar coverage
-
-### Día 6: DevOps
-
-1. Optimizar Dockerfile
-2. Configurar GitHub Actions
-3. Desplegar a producción
-4. Probar en ambiente real
-
-### Día 7: Documentación y Entrega
-
-1. Completar README
-2. Documentar endpoints
-3. Preparar presentación
-4. Revisar checklist final
-
----
-
-## 📝 Entregables
-
-1. **Repositorio GitHub** público con todo el código
-2. **URL de producción** con la API desplegada
-3. **Presentación** de 10-15 minutos
-
----
-
-## 🎯 Criterios de Evaluación
-
-| Criterio | Puntos | Descripción |
-|----------|--------|-------------|
-| Arquitectura | 20 | Estructura, separación de capas, código limpio |
-| Auth | 20 | JWT completo, seguridad, roles |
-| CRUD | 20 | Funcionalidad, validación, paginación |
-| Testing | 15 | Cobertura, calidad de tests |
-| DevOps | 15 | Docker, CI/CD, deployment |
-| Documentación | 10 | README, OpenAPI, instrucciones |
-| **Total** | **100** | |
-
-**Bonus** (+10 pts máximo):
-- Refresh tokens con blacklist (+3)
-- Rate limiting (+2)
-- Cache con Redis (+3)
-- WebSockets (+2)
+El instructor verificará:
+1. Coherencia entre dominio y entidades
+2. Lógica de negocio específica
+3. Nombres y terminología del dominio
+4. Commits incrementales (no un solo commit final)
 
 ---
 
 ## 📚 Recursos
 
-- [Semanas 1-4: Fundamentos](../week-01/)
-- [Semanas 5-10: Backend Intermedio](../week-05/)
-- [Semanas 11-14: Avanzado](../week-11/)
-- [Semana 15: Docker y CI/CD](../week-15/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [SQLAlchemy 2.0](https://docs.sqlalchemy.org/)
+- [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
+- [Política Anticopia](../../../_instructor-only/POLITICA-ANTICOPIA-FASTAPI.md)
 
 ---
 
-## ❓ FAQ
+## 📅 Entrega
 
-**¿Puedo usar código de las prácticas?**
-Sí, puedes reutilizar y adaptar código que escribiste durante el bootcamp.
-
-**¿Qué plataforma de deployment usar?**
-Railway, Render, o Fly.io tienen tiers gratuitos suficientes.
-
-**¿El frontend es necesario?**
-No, el foco es el backend. Un frontend básico es bonus.
-
-**¿Puedo trabajar en equipo?**
-El proyecto final es individual para la evaluación.
+- **Fecha límite**: Última sesión de la semana 16
+- **Formato**: Repositorio GitHub con README completo
+- **Demo**: Presentación de 10 minutos
 
 ---
 
-## 🏁 Checklist de Entrega
+**Tiempo estimado:** 6-8 horas
 
-Antes de entregar, verifica:
-
-- [ ] Código en GitHub público
-- [ ] README con instrucciones claras
-- [ ] Docker funciona localmente
-- [ ] Tests pasan
-- [ ] CI/CD configurado
-- [ ] API desplegada y accesible
-- [ ] Documentación OpenAPI completa
-- [ ] Presentación preparada
-
----
-
-¡Éxito en tu proyecto final! 🚀
+[← Volver a Semana 16](../)

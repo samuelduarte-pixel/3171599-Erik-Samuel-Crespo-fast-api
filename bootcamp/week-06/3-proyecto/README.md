@@ -1,108 +1,96 @@
-# 📝 Proyecto Semana 06: Blog API con Service Layer
+# 🏗️ Proyecto Semana 06: API con Service Layer y Relaciones N:M
+
+## 🏛️ Tu Dominio Asignado
+
+**Dominio**: `[El instructor te asignará tu dominio único]`
+
+> ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
+
+### 💡 Ejemplos de Adaptación por Dominio
+
+| Dominio | Entidad A | Entidad B | Relación N:M |
+|---------|----------|----------|--------------|
+| 🍝 **Restaurante** | Platillo | Ingrediente | Platillos tienen muchos ingredientes |
+| 📚 **Biblioteca** | Libro | Categoría | Libros pertenecen a muchas categorías |
+| 🏥 **Clínica Veterinaria** | Mascota | Servicio | Mascotas reciben muchos servicios |
+| 💊 **Farmacia** | Medicamento | Proveedor | Medicamentos de muchos proveedores |
+| 🏋️ **Gimnasio** | Miembro | Clase | Miembros asisten a muchas clases |
+
+---
 
 ## 🎯 Objetivo
 
-Construir una **API completa de Blog** aplicando:
-- Relaciones 1:N (Author → Posts)
-- Relaciones N:M (Posts ↔ Tags)
-- Arquitectura **Service Layer**
-- Queries optimizadas con eager loading
+Construir una **API con arquitectura por capas** implementando:
+
+- Service Layer para lógica de negocio
+- Relaciones N:M con tabla intermedia
+- Eager loading para optimización
+- DTOs/Schemas separados por capa
 
 ---
 
-## 📋 Requisitos Funcionales
+## 📦 Requisitos Funcionales (Adapta a tu Dominio)
 
-### Entidades
+### Entidades (Mínimo 3: 2 principales + tabla intermedia)
 
-| Entidad | Campos | Relaciones |
-|---------|--------|------------|
-| **Author** | id, name, email, bio, created_at | 1:N con Post |
-| **Post** | id, title, content, published, created_at | N:1 con Author, N:M con Tag |
-| **Tag** | id, name, slug | N:M con Post |
+```python
+# Ejemplo: Platillo-Ingrediente
+{EntityA}:           # Platillo
+    id, name, description, price, category
+    ingredients: list[{EntityB}]  # Relación N:M
+
+{EntityB}:           # Ingrediente  
+    id, name, unit, cost_per_unit
+    dishes: list[{EntityA}]  # Relación inversa
+
+{EntityA}{EntityB}:  # Tabla intermedia (dish_ingredients)
+    {entity_a}_id, {entity_b}_id
+    quantity: float  # Campo extra en relación
+```
+
+### Arquitectura por Capas
+
+```
+Routers (Controllers) → Services → Repositories → Models
+         ↓                  ↓             ↓
+     Schemas           Business      SQLAlchemy
+     (DTOs)             Logic         Queries
+```
 
 ### Endpoints Requeridos
 
-#### Authors
-- `POST /authors` - Crear autor
-- `GET /authors` - Listar autores (con paginación)
-- `GET /authors/{id}` - Obtener autor con sus posts
-- `PUT /authors/{id}` - Actualizar autor
-- `DELETE /authors/{id}` - Eliminar autor
-
-#### Posts
-- `POST /posts` - Crear post (con tags)
-- `GET /posts` - Listar posts (filtrar por author_id, tag, published)
-- `GET /posts/{id}` - Obtener post con autor y tags
-- `PUT /posts/{id}` - Actualizar post
-- `DELETE /posts/{id}` - Eliminar post
-- `POST /posts/{id}/publish` - Publicar post
-- `POST /posts/{id}/tags/{tag}` - Agregar tag
-- `DELETE /posts/{id}/tags/{tag}` - Eliminar tag
-
-#### Tags
-- `POST /tags` - Crear tag
-- `GET /tags` - Listar tags (con conteo de posts)
-- `GET /tags/{slug}/posts` - Posts por tag
+| Método | Endpoint | Service Method |
+|--------|----------|----------------|
+| GET | `/{entidades_a}` | `service.get_all()` |
+| GET | `/{entidades_a}/{id}` | `service.get_by_id()` |
+| POST | `/{entidades_a}` | `service.create()` |
+| POST | `/{entidades_a}/{id}/{entidades_b}` | `service.add_relation()` |
+| DELETE | `/{entidades_a}/{id}/{entidades_b}/{id_b}` | `service.remove_relation()` |
 
 ---
 
-## 📁 Estructura del Proyecto
+## 🗂️ Estructura del Proyecto
 
 ```
 starter/
-├── main.py                  # FastAPI app
-├── config.py                # Configuración
-├── database.py              # Engine + Session
+├── main.py
+├── database.py
 ├── models/
-│   ├── __init__.py
-│   ├── author.py
-│   ├── post.py
-│   └── tag.py
+│   ├── {entity_a}.py
+│   ├── {entity_b}.py
+│   └── associations.py   # Tabla N:M
 ├── schemas/
+│   ├── {entity_a}.py
+│   └── {entity_b}.py
+├── services/             # ← Capa de negocio
 │   ├── __init__.py
-│   ├── author.py
-│   ├── post.py
-│   └── tag.py
-├── services/                # 💼 Lógica de negocio
-│   ├── __init__.py
-│   ├── author_service.py
-│   └── post_service.py
-├── routers/                 # 🌐 Endpoints
-│   ├── __init__.py
-│   ├── authors.py
-│   ├── posts.py
-│   └── tags.py
-└── exceptions.py            # Excepciones personalizadas
+│   ├── {entity_a}_service.py
+│   └── {entity_b}_service.py
+├── routers/
+├── pyproject.toml
+├── Dockerfile
+└── docker-compose.yml
 ```
-
----
-
-## 🚀 Instrucciones
-
-### 1. Configuración Inicial
-
-```bash
-cd starter
-uv sync  # o pip install -r requirements.txt
-```
-
-### 2. Implementar TODOs
-
-El código tiene marcadores `# TODO:` que debes completar:
-
-1. **models/**: Definir relaciones entre entidades
-2. **services/**: Implementar lógica de negocio
-3. **routers/**: Conectar endpoints con services
-
-### 3. Ejecutar la API
-
-```bash
-uvicorn main:app --reload
-```
-
-### 4. Probar en `/docs`
-
-Swagger UI estará disponible en `http://localhost:8000/docs`
 
 ---
 
@@ -110,32 +98,37 @@ Swagger UI estará disponible en `http://localhost:8000/docs`
 
 | Criterio | Puntos |
 |----------|--------|
-| Modelos con relaciones correctas | 15 |
-| Services implementados | 25 |
-| Routers funcionando | 20 |
-| Queries optimizadas (no N+1) | 15 |
-| Manejo de errores | 10 |
-| Código limpio y organizado | 15 |
+| **Funcionalidad** (40%) | |
+| Relación N:M funcional | 15 |
+| CRUD completo | 15 |
+| Eager loading implementado | 10 |
+| **Adaptación al Dominio** (35%) | |
+| Entidades coherentes | 12 |
+| Relación lógica para el negocio | 13 |
+| Originalidad (no copia) | 10 |
+| **Calidad del Código** (25%) | |
+| Service Layer implementado | 12 |
+| Separación de responsabilidades | 8 |
+| Código limpio | 5 |
 | **Total** | **100** |
 
 ---
 
-## 🎯 Retos Opcionales
+## ⚠️ Política Anticopia
 
-1. **Búsqueda**: Agregar endpoint `GET /posts/search?q=texto`
-2. **Estadísticas**: Endpoint con posts por autor y tag más usado
-3. **Tests**: Escribir tests para los services
+- ❌ **No uses** "Blog/Post/Tag" genéricos
+- ✅ **Diseña** relaciones específicas de tu dominio
+- ✅ **Implementa** lógica de negocio real
 
 ---
 
 ## 📚 Recursos
 
-- [SQLAlchemy Relationships](https://docs.sqlalchemy.org/en/20/orm/relationships.html)
-- [FastAPI Dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/)
-- [Pydantic v2](https://docs.pydantic.dev/latest/)
+- [SQLAlchemy Many-to-Many](https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#many-to-many)
+- [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
 
 ---
 
-## 🔗 Navegación
+**Tiempo estimado:** 2.5 horas
 
-[← Volver a Prácticas](../2-practicas/) | [Ver Teoría →](../1-teoria/)
+[← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)

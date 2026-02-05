@@ -1,203 +1,159 @@
-# 📚 Proyecto: Library API
+# 📚 Proyecto Semana 05: API con SQLAlchemy ORM
+
+## 🏛️ Tu Dominio Asignado
+
+**Dominio**: `[El instructor te asignará tu dominio único]`
+
+> ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
+> Consulta tu asignación en el registro de la ficha.
+
+### 💡 Ejemplos de Adaptación por Dominio
+
+| Dominio | Entidad Principal | Entidad Secundaria | Relación |
+|---------|------------------|-------------------|----------|
+| 🍝 **Restaurante** | Platillo | Chef | N:1 (muchos platillos por chef) |
+| 📚 **Biblioteca** | Libro | Autor | N:1 (muchos libros por autor) |
+| 🏥 **Clínica Veterinaria** | Mascota | Dueño | N:1 (muchas mascotas por dueño) |
+| 💊 **Farmacia** | Medicamento | Laboratorio | N:1 (muchos medicamentos por lab) |
+| 🏋️ **Gimnasio** | Clase | Instructor | N:1 (muchas clases por instructor) |
+
+---
 
 ## 🎯 Objetivo
 
-Construir una API REST completa para gestionar una biblioteca con libros y autores, aplicando todos los conceptos de SQLAlchemy ORM aprendidos esta semana.
-
-**Duración estimada:** 2 horas
+Construir una **API REST completa** usando SQLAlchemy ORM con SQLite, implementando relaciones 1:N entre dos entidades de tu dominio.
 
 ---
 
-## 📋 Requerimientos
+## 📋 Descripción
 
-### Funcionalidades
+Crearás una API que:
 
-1. **Autores (Authors)**
-   - Crear autor
-   - Listar autores (con paginación)
-   - Obtener autor por ID
-   - Actualizar autor
-   - Eliminar autor
-
-2. **Libros (Books)**
-   - Crear libro (asociado a un autor)
-   - Listar libros (con filtros y paginación)
-   - Obtener libro por ID
-   - Actualizar libro
-   - Eliminar libro
+- Gestione dos entidades relacionadas (1:N)
+- Use SQLAlchemy para persistencia
+- Implemente operaciones CRUD completas
+- Maneje relaciones con eager/lazy loading
+- Use Alembic para migraciones
 
 ---
 
-## 🗃️ Modelos de Datos
+## 📦 Requisitos Funcionales (Adapta a tu Dominio)
 
-### Author
+### Entidades (Mínimo 2 relacionadas)
 
-| Campo | Tipo | Restricciones |
-|-------|------|---------------|
-| id | int | Primary Key |
-| name | str | Required, max 100 |
-| country | str | Optional, max 50 |
-| created_at | datetime | Default: now |
+**Entidad Secundaria** (el "uno" de la relación):
+```python
+# Ejemplo: Chef, Autor, Dueño, Laboratorio, Instructor
+{Secondary}:
+    id: int (PK, auto)
+    name: str (2-100)
+    email: str (único)
+    specialty: str | None
+    is_active: bool (default: True)
+    created_at: datetime
+```
 
-### Book
+**Entidad Principal** (el "muchos" de la relación):
+```python
+# Ejemplo: Platillo, Libro, Mascota, Medicamento, Clase
+{Primary}:
+    id: int (PK, auto)
+    name: str (2-200)
+    description: str | None
+    {secondary}_id: int (FK)
+    status: {Status}Enum
+    {campo_especifico}: tipo
+    created_at: datetime
+    updated_at: datetime | None
+```
 
-| Campo | Tipo | Restricciones |
-|-------|------|---------------|
-| id | int | Primary Key |
-| title | str | Required, max 200 |
-| isbn | str | Unique, max 13 |
-| year | int | Optional |
-| author_id | int | Foreign Key → authors.id |
-| created_at | datetime | Default: now |
+### Endpoints Requeridos
+
+**Entidad Secundaria:**
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/{secundarios}` | Crear |
+| GET | `/{secundarios}` | Listar con paginación |
+| GET | `/{secundarios}/{id}` | Obtener con sus {primarios} |
+| PATCH | `/{secundarios}/{id}` | Actualizar |
+| DELETE | `/{secundarios}/{id}` | Eliminar (si no tiene dependencias) |
+
+**Entidad Principal:**
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/{primarios}` | Crear (validar FK) |
+| GET | `/{primarios}` | Listar (con filtro por {secundario}) |
+| GET | `/{primarios}/{id}` | Obtener con {secundario} |
+| PATCH | `/{primarios}/{id}` | Actualizar |
+| DELETE | `/{primarios}/{id}` | Eliminar |
 
 ---
 
-## 📁 Estructura del Proyecto
+## 🗂️ Estructura del Proyecto
 
 ```
 starter/
-├── main.py          # FastAPI app y endpoints
-├── database.py      # Configuración SQLAlchemy
-├── models.py        # Modelos Author y Book
-├── schemas.py       # Schemas Pydantic
-└── library.db       # SQLite (se crea automáticamente)
+├── main.py
+├── database.py       # Engine y sesión
+├── models/
+│   ├── __init__.py
+│   ├── {secundario}.py
+│   └── {primario}.py
+├── schemas/
+│   ├── __init__.py
+│   ├── {secundario}.py
+│   └── {primario}.py
+├── routers/
+│   ├── __init__.py
+│   ├── {secundarios}.py
+│   └── {primarios}.py
+├── alembic/          # Migraciones
+├── pyproject.toml
+├── Dockerfile
+└── docker-compose.yml
 ```
-
----
-
-## 🔧 Setup
-
-```bash
-cd starter
-
-# Crear entorno con uv
-uv init .
-uv add fastapi uvicorn sqlalchemy pydantic-settings
-
-# Ejecutar
-uv run fastapi dev main.py
-```
-
----
-
-## 📝 Endpoints Requeridos
-
-### Authors
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| POST | `/authors` | Crear autor |
-| GET | `/authors` | Listar autores |
-| GET | `/authors/{id}` | Obtener autor |
-| PUT | `/authors/{id}` | Actualizar autor |
-| DELETE | `/authors/{id}` | Eliminar autor |
-
-### Books
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| POST | `/books` | Crear libro |
-| GET | `/books` | Listar libros |
-| GET | `/books/{id}` | Obtener libro |
-| PUT | `/books/{id}` | Actualizar libro |
-| DELETE | `/books/{id}` | Eliminar libro |
 
 ---
 
 ## ✅ Criterios de Evaluación
 
-### Funcionalidad (40%)
-
-- [ ] CRUD completo de autores funciona
-- [ ] CRUD completo de libros funciona
-- [ ] Los libros se asocian correctamente a autores
-- [ ] La paginación funciona en listados
-
-### Código (30%)
-
-- [ ] Modelos SQLAlchemy bien definidos
-- [ ] Schemas Pydantic con validaciones
-- [ ] Dependency Injection con `get_db()`
-- [ ] Manejo de errores con HTTPException
-
-### Calidad (30%)
-
-- [ ] Código limpio y organizado
-- [ ] Documentación en Swagger funcional
-- [ ] Sin errores de linting
-- [ ] Respuestas HTTP correctas (201, 404, etc.)
+| Criterio | Puntos |
+|----------|--------|
+| **Funcionalidad** (40%) | |
+| CRUD de ambas entidades | 15 |
+| Relación 1:N funcional | 15 |
+| Migraciones con Alembic | 10 |
+| **Adaptación al Dominio** (35%) | |
+| Entidades coherentes con dominio | 12 |
+| Campos específicos del negocio | 13 |
+| Originalidad (no copia) | 10 |
+| **Calidad del Código** (25%) | |
+| Modelos SQLAlchemy correctos | 10 |
+| Schemas Pydantic separados | 8 |
+| Código modular | 7 |
+| **Total** | **100** |
 
 ---
 
-## 💡 Hints
+## ⚠️ Política Anticopia
 
-### 1. Foreign Key en SQLAlchemy
+- ❌ **No uses** "Book/Author" genéricos
+- ❌ **No copies** modelos de otros dominios
+- ✅ **Diseña** entidades específicas de tu negocio
+- ✅ **Implementa** campos y validaciones relevantes
 
-```python
-from sqlalchemy import ForeignKey
-
-class Book(Base):
-    author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"))
-```
-
-### 2. Validar que el autor existe antes de crear libro
-
-```python
-@app.post("/books")
-def create_book(book: BookCreate, db: Session = Depends(get_db)):
-    # Verificar que el autor existe
-    author = db.get(Author, book.author_id)
-    if not author:
-        raise HTTPException(status_code=404, detail="Author not found")
-    # ... crear libro
-```
-
-### 3. Filtrar libros por autor
-
-```python
-@app.get("/books")
-def list_books(author_id: int | None = None, db: Session = Depends(get_db)):
-    stmt = select(Book)
-    if author_id:
-        stmt = stmt.where(Book.author_id == author_id)
-    # ...
-```
+> 💡 Dos proyectos con las mismas entidades serán evaluados como **copia**.
 
 ---
 
-## 🧪 Probar la API
+## 📚 Recursos
 
-### Crear autor
-
-```bash
-curl -X POST http://localhost:8000/authors \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Gabriel García Márquez", "country": "Colombia"}'
-```
-
-### Crear libro
-
-```bash
-curl -X POST http://localhost:8000/books \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Cien años de soledad", "isbn": "9780060883287", "year": 1967, "author_id": 1}'
-```
-
-### Listar libros de un autor
-
-```bash
-curl "http://localhost:8000/books?author_id=1"
-```
+- [SQLAlchemy 2.0 Documentation](https://docs.sqlalchemy.org/en/20/)
+- [Alembic Documentation](https://alembic.sqlalchemy.org/)
+- [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
 
 ---
 
-## 📤 Entrega
+**Tiempo estimado:** 2.5 horas
 
-1. Completa todos los TODOs en los archivos `starter/`
-2. Verifica que todos los endpoints funcionan
-3. Prueba con Swagger UI (http://localhost:8000/docs)
-4. Asegúrate de que no hay errores
-
----
-
-[← Volver a Semana 05](../README.md)
+[← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)

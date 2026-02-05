@@ -1,136 +1,92 @@
-# 📬 Proyecto: Notification Service
+# 🔌 Proyecto Semana 09: API con Ports & Adapters
+
+## 🏛️ Tu Dominio Asignado
+
+**Dominio**: `[El instructor te asignará tu dominio único]`
+
+> ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
+
+### 💡 Ejemplos de Adaptación por Dominio
+
+| Dominio | Servicio Multi-Canal | Puertos | Adaptadores |
+|---------|---------------------|---------|-------------|
+| 🍝 **Restaurante** | Notificaciones de pedidos | IOrderNotifier | Email, SMS, Push |
+| 📚 **Biblioteca** | Alertas de préstamos | ILoanNotifier | Email, WhatsApp |
+| 🏥 **Clínica Veterinaria** | Recordatorios de citas | IAppointmentReminder | SMS, Email |
+| 💊 **Farmacia** | Alertas de stock/recetas | IStockAlert | Email, Slack |
+| 🏋️ **Gimnasio** | Recordatorios de clases | IClassReminder | Push, Email |
+
+---
 
 ## 🎯 Objetivo
 
-Construir un **sistema de notificaciones multi-canal** aplicando el patrón **Ports & Adapters** para mantener el dominio desacoplado de la infraestructura.
+Implementar un **servicio multi-canal** usando Ports & Adapters para:
+
+- Definir puertos (interfaces) del dominio
+- Crear adaptadores intercambiables
+- Aplicar inversión de dependencias
+- Facilitar testing y extensibilidad
 
 ---
 
-## 📋 Descripción
+## 📦 Requisitos Funcionales (Adapta a tu Dominio)
 
-Crearás una API REST que permite enviar notificaciones a través de múltiples canales:
-
-- 📧 **Email** - Envío de correos electrónicos
-- 📱 **SMS** - Mensajes de texto
-- 🔔 **Push** - Notificaciones push
-- 🔗 **Webhook** - Llamadas HTTP a URLs externas
-
----
-
-## 🏗️ Arquitectura
+### Arquitectura Ports & Adapters
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     PRESENTATION LAYER                      │
-│                   (FastAPI Routers, DTOs)                   │
-├─────────────────────────────────────────────────────────────┤
-│                     APPLICATION LAYER                       │
-│                 (NotificationService, DTOs)                 │
-├─────────────────────────────────────────────────────────────┤
-│                       DOMAIN LAYER                          │
-│              (Entities, Ports/Protocols)                    │
-├─────────────────────────────────────────────────────────────┤
-│                   INFRASTRUCTURE LAYER                      │
-│        (Adapters: Email, SMS, Push, Webhook, DB)           │
-└─────────────────────────────────────────────────────────────┘
+                 ┌─────────────────┐
+                 │    Dominio      │
+                 │  (Entidades)    │
+                 └────────┬────────┘
+                          │
+         ┌────────────────┼────────────────┐
+         ▼                ▼                ▼
+    ┌─────────┐     ┌─────────┐     ┌─────────┐
+    │  Port   │     │  Port   │     │  Port   │
+    │(Interface)    │(Interface)    │(Interface)
+    └────┬────┘     └────┬────┘     └────┬────┘
+         │               │               │
+    ┌────▼────┐     ┌────▼────┐     ┌────▼────┐
+    │ Adapter │     │ Adapter │     │ Adapter │
+    │ (Email) │     │  (SMS)  │     │ (Push)  │
+    └─────────┘     └─────────┘     └─────────┘
 ```
 
+### Puertos (Interfaces)
+
+```python
+class I{Service}Port(Protocol):
+    async def send(self, recipient: str, message: {Message}) -> bool: ...
+    async def get_status(self, id: str) -> {Status}: ...
+```
+
+### Adaptadores
+
+Implementa **mínimo 3 adaptadores** diferentes:
+1. Adaptador principal (Email/DB)
+2. Adaptador secundario (SMS/Cache)
+3. Adaptador de pruebas (Mock/Console)
+
 ---
 
-## ⏱️ Duración Estimada
-
-2 horas
-
----
-
-## 📁 Estructura del Proyecto
+## 🗂️ Estructura del Proyecto
 
 ```
 starter/
+├── main.py
+├── domain/
+│   ├── entities/
+│   └── ports/           # ← Interfaces
+├── adapters/
+│   ├── primary/         # API, CLI
+│   └── secondary/       # Email, SMS, DB
+├── application/
+│   └── services/
+├── tests/
+│   └── adapters/        # Test adapters
 ├── pyproject.toml
-├── docker-compose.yml
 ├── Dockerfile
-├── .env.example
-└── src/
-    ├── main.py
-    ├── config.py
-    ├── domain/
-    │   ├── entities/
-    │   │   └── notification.py
-    │   └── ports/
-    │       ├── notification_sender.py
-    │       ├── notification_repository.py
-    │       └── template_renderer.py
-    ├── application/
-    │   ├── services/
-    │   │   └── notification_service.py
-    │   └── dtos/
-    │       └── notification_dtos.py
-    ├── infrastructure/
-    │   ├── adapters/
-    │   │   ├── email_adapter.py
-    │   │   ├── sms_adapter.py
-    │   │   ├── push_adapter.py
-    │   │   ├── webhook_adapter.py
-    │   │   └── console_adapter.py
-    │   ├── persistence/
-    │   │   └── in_memory_repository.py
-    │   └── templates/
-    │       └── simple_renderer.py
-    ├── presentation/
-    │   ├── dependencies.py
-    │   └── routers/
-    │       └── notifications.py
-    └── tests/
-        ├── conftest.py
-        ├── fakes/
-        └── unit/
-```
-
----
-
-## 🚀 Instrucciones
-
-### 1. Configurar el entorno
-
-```bash
-cd starter
-cp .env.example .env
-docker compose up -d
-```
-
-### 2. Implementar los Ports
-
-Completa los TODOs en `src/domain/ports/`.
-
-### 3. Implementar los Adapters
-
-Completa los TODOs en `src/infrastructure/adapters/`.
-
-### 4. Implementar el Service
-
-Completa los TODOs en `src/application/services/notification_service.py`.
-
-### 5. Configurar Dependencies
-
-Completa los TODOs en `src/presentation/dependencies.py`.
-
-### 6. Ejecutar tests
-
-```bash
-docker compose exec api uv run pytest -v
-```
-
-### 7. Probar la API
-
-```bash
-# Enviar notificación
-curl -X POST http://localhost:8000/api/v1/notifications \
-  -H "Content-Type: application/json" \
-  -d '{"recipient": "user@example.com", "channel": "email", "message": "Hello!", "subject": "Test"}'
-
-# Obtener notificación
-curl http://localhost:8000/api/v1/notifications/1
+└── docker-compose.yml
 ```
 
 ---
@@ -139,17 +95,37 @@ curl http://localhost:8000/api/v1/notifications/1
 
 | Criterio | Puntos |
 |----------|--------|
-| Ports definidos con Protocols | 5 |
-| 4 Adapters implementados | 5 |
-| Service usa solo Ports | 5 |
-| Tests con fake adapters | 5 |
-| API REST funcionando | 5 |
-| Código limpio y documentado | 5 |
-| **Total** | **30** |
+| **Funcionalidad** (40%) | |
+| Puertos definidos correctamente | 15 |
+| 3+ adaptadores implementados | 15 |
+| Servicio multi-canal funcional | 10 |
+| **Adaptación al Dominio** (35%) | |
+| Servicio coherente con dominio | 12 |
+| Canales lógicos para el negocio | 13 |
+| Originalidad (no copia) | 10 |
+| **Calidad del Código** (25%) | |
+| Inversión de dependencias | 10 |
+| Adaptadores intercambiables | 10 |
+| Código testeable | 5 |
+| **Total** | **100** |
+
+---
+
+## ⚠️ Política Anticopia
+
+- ❌ **No uses** "NotificationService" genérico
+- ✅ **Diseña** un servicio específico de tu dominio
+- ✅ **Implementa** canales relevantes para tu negocio
 
 ---
 
 ## 📚 Recursos
 
-- [Documentación de Protocols](https://docs.python.org/3/library/typing.html#typing.Protocol)
-- [FastAPI Dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/)
+- [Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/)
+- [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
+
+---
+
+**Tiempo estimado:** 2.5 horas
+
+[← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)

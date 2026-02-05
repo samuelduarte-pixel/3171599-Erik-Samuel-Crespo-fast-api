@@ -1,8 +1,27 @@
-# 🚀 Proyecto Semana 04: Task Manager API
+# 🚀 Proyecto Semana 04: API con Responses y Manejo de Errores
+
+## 🏛️ Tu Dominio Asignado
+
+**Dominio**: `[El instructor te asignará tu dominio único]`
+
+> ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
+> Consulta tu asignación en el registro de la ficha.
+
+### 💡 Ejemplos de Adaptación por Dominio
+
+| Dominio | Entidad Principal | Estados | Acciones Especiales |
+|---------|------------------|---------|---------------------|
+| 🍝 **Restaurante** | Orden | pending, preparing, ready, delivered | mark_preparing, mark_ready |
+| 📚 **Biblioteca** | Préstamo | active, overdue, returned | extend, mark_returned |
+| 🏥 **Clínica Veterinaria** | Cita | scheduled, in_progress, completed, cancelled | start, complete, cancel |
+| 💊 **Farmacia** | Venta | pending, paid, delivered | process_payment, deliver |
+| 🏋️ **Gimnasio** | Reservación | booked, confirmed, completed, no_show | confirm, check_in |
+
+---
 
 ## 📋 Descripción
 
-Construirás una **API REST completa** para gestión de tareas aplicando todo lo aprendido sobre responses, status codes, manejo de errores y documentación OpenAPI.
+Construirás una **API REST completa** para gestionar una entidad de tu dominio aplicando todo lo aprendido sobre responses, status codes, manejo de errores y documentación OpenAPI.
 
 ---
 
@@ -18,63 +37,62 @@ Al completar este proyecto serás capaz de:
 
 ---
 
-## 📚 Requisitos Previos
+## 📝 Requerimientos Funcionales (Adapta a tu Dominio)
 
-- Completar ejercicios 01-04 de esta semana
-- Entender response_model y sus opciones
-- Conocer status codes HTTP
-- Saber usar HTTPException y exception handlers
+### Entidad Principal
 
----
+Diseña una entidad con **mínimo 10 campos** incluyendo estados y timestamps:
 
-## 🏗️ Estructura del Proyecto
+```python
+# Ejemplo para Restaurante (Orden)
+Order:
+    id: int (auto-generado)
+    table_number: int (1-50)
+    customer_name: str (2-100 caracteres)
+    items: list[OrderItem]
+    status: OrderStatus (pending, preparing, ready, delivered)
+    priority: Priority (low, normal, high)
+    notes: str | None (máx 500)
+    total: float (calculado)
+    created_at: datetime
+    updated_at: datetime | None
+    completed_at: datetime | None
 
+# Ejemplo para Biblioteca (Préstamo)
+Loan:
+    id: int (auto-generado)
+    book_id: int
+    member_id: int
+    status: LoanStatus (active, overdue, returned)
+    due_date: date
+    return_date: date | None
+    extensions: int (máx 2)
+    fine_amount: float (calculado)
+    created_at: datetime
+    updated_at: datetime | None
 ```
-3-proyecto/
-├── README.md          # Este archivo
-├── starter/           # Código inicial (tu punto de partida)
-│   ├── main.py        # Archivo principal con TODOs
-│   ├── models.py      # Schemas Pydantic
-│   ├── database.py    # Simulación de base de datos
-│   ├── exceptions.py  # Excepciones personalizadas
-│   ├── pyproject.toml
-│   ├── Dockerfile
-│   └── docker-compose.yml
-└── solution/          # Solución completa (solo instructores)
-```
 
----
-
-## 📝 Requerimientos Funcionales
-
-### Entidades
-
-**Task (Tarea)**
-- `id`: int (auto-generado)
-- `title`: str (2-100 caracteres)
-- `description`: str | None (máx 500 caracteres)
-- `status`: enum (pending, in_progress, completed)
-- `priority`: enum (low, medium, high)
-- `created_at`: datetime
-- `updated_at`: datetime | None
-- `completed_at`: datetime | None
-
-### Endpoints Requeridos
+### Endpoints Requeridos (Adapta rutas)
 
 | Método | Endpoint | Descripción | Status Code |
 |--------|----------|-------------|-------------|
-| GET | `/tasks` | Listar tareas (con filtros) | 200 |
-| GET | `/tasks/{id}` | Obtener tarea por ID | 200 / 404 |
-| POST | `/tasks` | Crear nueva tarea | 201 |
-| PUT | `/tasks/{id}` | Actualizar tarea completa | 200 / 404 |
-| PATCH | `/tasks/{id}/status` | Cambiar solo el status | 200 / 404 / 400 |
-| DELETE | `/tasks/{id}` | Eliminar tarea | 204 / 404 |
-| GET | `/tasks/stats` | Estadísticas de tareas | 200 |
+| GET | `/{entidades}` | Listar con filtros | 200 |
+| GET | `/{entidades}/{id}` | Obtener por ID | 200 / 404 |
+| POST | `/{entidades}` | Crear nueva entidad | 201 |
+| PUT | `/{entidades}/{id}` | Actualizar completa | 200 / 404 |
+| PATCH | `/{entidades}/{id}/status` | Cambiar estado | 200 / 404 / 400 |
+| DELETE | `/{entidades}/{id}` | Eliminar | 204 / 404 |
+| GET | `/{entidades}/stats` | Estadísticas | 200 |
 
-### Filtros para GET /tasks
+**Ejemplos de rutas por dominio:**
+- Restaurante: `/orders`, `/orders/1/status`, `/orders/stats`
+- Biblioteca: `/loans`, `/loans/1/status`, `/loans/stats`
+- Gimnasio: `/reservations`, `/reservations/1/check-in`
+
+### Filtros para Listado
 
 - `status`: filtrar por estado
-- `priority`: filtrar por prioridad
+- `{campo_secundario}`: filtro específico de tu dominio
 - `skip`: paginación (offset)
 - `limit`: paginación (máximo 100)
 
@@ -84,11 +102,11 @@ Al completar este proyecto serás capaz de:
 
 Debes crear schemas separados para:
 
-1. **TaskCreate**: Para crear tareas (sin id, timestamps)
-2. **TaskUpdate**: Para actualizar (todos opcionales)
-3. **TaskResponse**: Para respuestas (sin campos internos)
-4. **TaskListResponse**: Para listados con paginación
-5. **TaskStats**: Para estadísticas
+1. **{Entity}Create**: Para crear (sin id, timestamps)
+2. **{Entity}Update**: Para actualizar (todos opcionales)
+3. **{Entity}Response**: Para respuestas (sin campos internos)
+4. **{Entity}ListResponse**: Para listados con paginación
+5. **{Entity}Stats**: Para estadísticas de tu dominio
 
 ---
 
@@ -98,137 +116,82 @@ Implementa errores consistentes con este formato:
 
 ```json
 {
-    "error": {
-        "code": "TASK_NOT_FOUND",
-        "message": "Task with id 99 not found",
-        "details": null
-    }
+  "error": {
+    "code": "ENTITY_NOT_FOUND",
+    "message": "No se encontró la entidad con ID 123",
+    "details": {"entity_id": 123}
+  }
 }
 ```
 
-### Códigos de Error Requeridos
+### Errores Requeridos (Adapta a tu dominio)
 
-| Código | HTTP Status | Descripción |
-|--------|-------------|-------------|
-| `TASK_NOT_FOUND` | 404 | Tarea no existe |
-| `INVALID_STATUS_TRANSITION` | 400 | Transición de estado inválida |
-| `VALIDATION_ERROR` | 422 | Error de validación |
-| `DUPLICATE_TASK` | 409 | Tarea duplicada (mismo título) |
-
-### Reglas de Negocio
-
-- No se puede pasar de `pending` a `completed` directamente
-- No se puede volver a `pending` desde `completed`
-- Al completar, se registra `completed_at`
+| Código | HTTP Status | Cuándo usarlo |
+|--------|-------------|---------------|
+| `{ENTITY}_NOT_FOUND` | 404 | Entidad no existe |
+| `INVALID_STATUS_TRANSITION` | 400 | Cambio de estado inválido |
+| `{ENTITY}_ALREADY_EXISTS` | 409 | Duplicado |
+| `VALIDATION_ERROR` | 422 | Datos inválidos |
 
 ---
 
-## 📖 Documentación OpenAPI
+## 🏗️ Estructura del Proyecto
 
-Tu API debe incluir:
-
-- ✅ Título, descripción y versión
-- ✅ Tags para agrupar endpoints
-- ✅ Descripciones en cada endpoint
-- ✅ Ejemplos en schemas
-- ✅ Múltiples responses documentados (200, 404, 422, etc.)
-
----
-
-## 🧪 Casos de Prueba
-
-Verifica estos escenarios:
-
-### Crear Tarea
-```bash
-curl -X POST http://localhost:8000/tasks \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Learn FastAPI", "priority": "high"}'
-# Esperado: 201 Created
 ```
-
-### Obtener Tarea Inexistente
-```bash
-curl http://localhost:8000/tasks/999
-# Esperado: 404 con error TASK_NOT_FOUND
-```
-
-### Transición Inválida
-```bash
-# Intentar pasar de pending a completed
-curl -X PATCH http://localhost:8000/tasks/1/status \
-  -H "Content-Type: application/json" \
-  -d '{"status": "completed"}'
-# Esperado: 400 con error INVALID_STATUS_TRANSITION
-```
-
-### Listar con Filtros
-```bash
-curl "http://localhost:8000/tasks?status=pending&priority=high&limit=10"
-# Esperado: 200 con lista paginada
+starter/
+├── main.py            # Archivo principal
+├── models.py          # Schemas Pydantic
+├── database.py        # Simulación de DB
+├── exceptions.py      # Excepciones personalizadas
+├── pyproject.toml
+├── Dockerfile
+└── docker-compose.yml
 ```
 
 ---
 
-## 🚀 Ejecución
-
-```bash
-cd starter
-docker compose up --build
-```
-
-Accede a:
-- **API**: http://localhost:8000
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-
----
-
-## 📊 Rúbrica de Evaluación
+## ✅ Criterios de Evaluación
 
 | Criterio | Puntos |
 |----------|--------|
-| CRUD completo funcional | 20 |
-| Response models correctos | 15 |
-| Status codes apropiados | 15 |
-| Manejo de errores consistente | 20 |
-| Documentación OpenAPI completa | 15 |
-| Reglas de negocio implementadas | 10 |
-| Código limpio y organizado | 5 |
+| **Funcionalidad** (40%) | |
+| Endpoints CRUD completos | 15 |
+| Transiciones de estado | 10 |
+| Estadísticas funcionando | 8 |
+| Status codes correctos | 7 |
+| **Adaptación al Dominio** (35%) | |
+| Entidad coherente con dominio | 12 |
+| Estados y transiciones lógicas | 13 |
+| Originalidad (no copia) | 10 |
+| **Calidad del Código** (25%) | |
+| Response models correctos | 10 |
+| Manejo de errores consistente | 10 |
+| Documentación OpenAPI | 5 |
 | **Total** | **100** |
-
-**Mínimo para aprobar**: 70 puntos
 
 ---
 
-## 💡 Consejos
+## ⚠️ Política Anticopia
 
-1. Empieza por los schemas Pydantic
-2. Implementa el CRUD básico primero
-3. Agrega el manejo de errores después
-4. Documenta mientras desarrollas
-5. Prueba cada endpoint con Swagger UI
+Este proyecto debe reflejar **tu dominio único asignado**:
+
+- ❌ **No uses** "Task" o "Tarea" genérica
+- ❌ **No copies** estados de otros dominios
+- ✅ **Diseña** estados lógicos para tu negocio
+- ✅ **Implementa** transiciones válidas
+
+> 💡 Si dos proyectos tienen las mismas entidades/estados, ambos serán evaluados como **copia**.
 
 ---
 
 ## 📚 Recursos
 
 - [FastAPI Response Model](https://fastapi.tiangolo.com/tutorial/response-model/)
-- [FastAPI Handling Errors](https://fastapi.tiangolo.com/tutorial/handling-errors/)
 - [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+- [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
 
 ---
 
-## ✅ Checklist de Entrega
-
-- [ ] Todos los endpoints funcionan
-- [ ] Status codes correctos
-- [ ] Errores con formato consistente
-- [ ] Reglas de negocio implementadas
-- [ ] Documentación OpenAPI completa
-- [ ] Docker funcional
-- [ ] Código comentado
-
----
+**Tiempo estimado:** 2 horas
 
 [← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)

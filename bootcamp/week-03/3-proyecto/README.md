@@ -1,14 +1,33 @@
-# 🛒 Proyecto: API de Catálogo de Productos
+# 🛒 Proyecto Semana 03: API de Catálogo con Búsqueda Avanzada
+
+## 🏛️ Tu Dominio Asignado
+
+**Dominio**: `[El instructor te asignará tu dominio único]`
+
+> ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
+> Consulta tu asignación en el registro de la ficha.
+
+### 💡 Ejemplos de Adaptación por Dominio
+
+| Dominio | Entidad Catálogo | Categorías | Filtros Sugeridos |
+|---------|-----------------|------------|-------------------|
+| 🍝 **Restaurante** | Platillos | Entradas, Principales, Postres | price, vegetarian, spicy_level |
+| 📚 **Biblioteca** | Libros | Ficción, No Ficción, Académico | author, year, available |
+| 🏥 **Clínica Veterinaria** | Servicios | Consultas, Vacunas, Cirugías | species, duration, price |
+| 💊 **Farmacia** | Medicamentos | Analgésicos, Antibióticos, Vitaminas | requires_prescription, price, stock |
+| 🏋️ **Gimnasio** | Clases | Cardio, Fuerza, Flexibilidad | instructor, level, schedule |
+
+---
 
 ## 📋 Descripción
 
-Construirás una API completa para gestionar un catálogo de productos con categorías, incluyendo búsqueda avanzada, filtrado, paginación y ordenamiento.
+Construirás una **API completa para gestionar un catálogo** de tu dominio con categorías, incluyendo búsqueda avanzada, filtrado, paginación y ordenamiento.
 
 ---
 
 ## 🎯 Objetivos
 
-- ✅ Implementar CRUD completo de productos y categorías
+- ✅ Implementar CRUD completo de entidades y categorías
 - ✅ Crear búsqueda y filtrado avanzado
 - ✅ Implementar paginación con metadatos
 - ✅ Aplicar ordenamiento flexible
@@ -16,7 +35,7 @@ Construirás una API completa para gestionar un catálogo de productos con categ
 
 ---
 
-## 📦 Requisitos Funcionales
+## 📦 Requisitos Funcionales (Adapta a tu Dominio)
 
 ### 1. Categorías
 
@@ -28,29 +47,46 @@ Construirás una API completa para gestionar un catálogo de productos con categ
 | PUT | `/categories/{id}` | Actualizar categoría |
 | DELETE | `/categories/{id}` | Eliminar categoría |
 
-### 2. Productos
+### 2. Entidades del Catálogo
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `/products` | Listar productos con filtros |
-| GET | `/products/{id}` | Obtener un producto |
-| POST | `/products` | Crear producto |
-| PUT | `/products/{id}` | Actualizar producto |
-| PATCH | `/products/{id}` | Actualizar parcialmente |
-| DELETE | `/products/{id}` | Eliminar producto |
+| GET | `/{entidades}` | Listar con filtros |
+| GET | `/{entidades}/{id}` | Obtener una entidad |
+| POST | `/{entidades}` | Crear entidad |
+| PUT | `/{entidades}/{id}` | Actualizar entidad |
+| PATCH | `/{entidades}/{id}` | Actualizar parcialmente |
+| DELETE | `/{entidades}/{id}` | Eliminar entidad |
 
-### 3. Filtrado y Búsqueda
+**Ejemplos de rutas:**
+- Restaurante: `/dishes`, `/dishes/1`
+- Biblioteca: `/books`, `/books/1`
+- Gimnasio: `/classes`, `/classes/1`
 
-El endpoint `GET /products` debe soportar:
+### 3. Filtrado y Búsqueda (Diseña según tu dominio)
+
+El endpoint GET debe soportar **mínimo 6 filtros**:
 
 | Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
 | `search` | string | Buscar en nombre y descripción |
 | `category_id` | int | Filtrar por categoría |
-| `min_price` | float | Precio mínimo |
-| `max_price` | float | Precio máximo |
-| `in_stock` | bool | Solo productos en stock |
+| `min_{campo}` | number | Mínimo de campo numérico |
+| `max_{campo}` | number | Máximo de campo numérico |
+| `{booleano}` | bool | Filtro booleano del dominio |
 | `tags` | list[str] | Filtrar por tags |
+
+**Ejemplos por dominio:**
+```bash
+# Restaurante
+GET /dishes?search=pasta&category_id=1&min_price=100&vegetarian=true
+
+# Biblioteca
+GET /books?search=python&category_id=2&available=true&min_year=2020
+
+# Gimnasio
+GET /classes?category_id=1&instructor=María&level=beginner
+```
 
 ### 4. Paginación
 
@@ -76,7 +112,7 @@ Respuesta paginada:
 
 | Parámetro | Valores | Default |
 |-----------|---------|---------|
-| `sort_by` | name, price, created_at | name |
+| `sort_by` | name, {campo}, created_at | name |
 | `order` | asc, desc | asc |
 
 ---
@@ -89,7 +125,7 @@ starter/
 ├── routers/
 │   ├── __init__.py
 │   ├── categories.py # Rutas de categorías
-│   └── products.py   # Rutas de productos
+│   └── {entidad}.py  # Rutas de tu entidad
 ├── schemas.py        # Modelos Pydantic
 ├── database.py       # Base de datos simulada
 ├── dependencies.py   # Dependencias reutilizables
@@ -100,80 +136,46 @@ starter/
 
 ---
 
-## 🚀 Ejecución
-
-```bash
-cd starter
-docker compose up --build
-```
-
-- API: http://localhost:8000
-- Docs: http://localhost:8000/docs
-
----
-
-## 📝 Instrucciones
-
-1. **Completa `schemas.py`**: Define los modelos Pydantic
-2. **Completa `dependencies.py`**: Crea dependencias reutilizables
-3. **Completa `routers/categories.py`**: Implementa CRUD de categorías
-4. **Completa `routers/products.py`**: Implementa CRUD con filtros
-
-### Schemas Requeridos
-
-```python
-# schemas.py
-class CategoryCreate(BaseModel):
-    name: str
-    description: str | None = None
-
-class ProductCreate(BaseModel):
-    name: str
-    description: str | None = None
-    price: float
-    category_id: int
-    stock: int = 0
-    tags: list[str] = []
-```
-
-### Dependencias Requeridas
-
-```python
-# dependencies.py
-class PaginationParams:
-    # page, per_page, offset
-
-class ProductFilters:
-    # search, category_id, min_price, max_price, in_stock, tags
-
-class SortingParams:
-    # sort_by, order
-```
-
----
-
 ## ✅ Criterios de Evaluación
 
 | Criterio | Puntos |
 |----------|--------|
-| CRUD de categorías funcional | 15 |
-| CRUD de productos funcional | 20 |
-| Búsqueda por texto | 10 |
-| Filtros (categoría, precio, stock) | 15 |
-| Filtro por múltiples tags | 10 |
-| Paginación con metadatos | 15 |
-| Ordenamiento | 10 |
-| Documentación OpenAPI | 5 |
+| **Funcionalidad** (40%) | |
+| CRUD completo de categorías | 10 |
+| CRUD completo de entidad | 15 |
+| Filtrado con 6+ parámetros | 15 |
+| **Adaptación al Dominio** (35%) | |
+| Entidad coherente con dominio | 12 |
+| Filtros específicos del negocio | 13 |
+| Originalidad (no copia) | 10 |
+| **Calidad del Código** (25%) | |
+| Paginación con metadatos | 10 |
+| Ordenamiento flexible | 8 |
+| Código limpio y modular | 7 |
 | **Total** | **100** |
 
 ---
 
-## 🔗 Recursos
+## ⚠️ Política Anticopia
 
-- [FastAPI Path Parameters](https://fastapi.tiangolo.com/tutorial/path-params/)
-- [FastAPI Query Parameters](https://fastapi.tiangolo.com/tutorial/query-params/)
-- [FastAPI Dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/)
+Este proyecto debe reflejar **tu dominio único asignado**:
+
+- ❌ **No uses** "productos" genéricos
+- ❌ **No copies** filtros de otros dominios
+- ✅ **Diseña** categorías específicas de tu negocio
+- ✅ **Implementa** filtros relevantes para tu contexto
+
+> 💡 Dos proyectos con las mismas entidades/filtros serán evaluados como **copia**.
 
 ---
 
-[← Volver a Week-03](../README.md)
+## 📚 Recursos
+
+- [FastAPI Query Parameters](https://fastapi.tiangolo.com/tutorial/query-params/)
+- [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
+
+---
+
+**Tiempo estimado:** 2 horas
+
+[← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)

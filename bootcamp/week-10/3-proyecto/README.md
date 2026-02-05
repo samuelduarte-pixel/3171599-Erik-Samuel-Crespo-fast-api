@@ -1,288 +1,148 @@
-# 🎯 Proyecto Semana 10: Task Management System
+# 🔷 Proyecto Semana 10: API con Arquitectura Hexagonal Completa
 
-## 📋 Descripción
+## 🏛️ Tu Dominio Asignado
 
-Construirás un **Sistema de Gestión de Tareas** completo usando **Arquitectura Hexagonal**. Este proyecto integra todos los conceptos aprendidos: Domain Layer, Application Layer, Infrastructure Layer y Composition Root.
+**Dominio**: `[El instructor te asignará tu dominio único]`
 
----
+> ⚠️ **IMPORTANTE**: Cada aprendiz trabaja sobre un dominio diferente.
 
-## 🎯 Objetivos
+### 💡 Ejemplos de Adaptación por Dominio
 
-- Implementar arquitectura hexagonal completa desde cero
-- Crear entidades de dominio con comportamiento rico
-- Definir puertos (interfaces) para inversión de dependencias
-- Implementar casos de uso en la capa de aplicación
-- Crear adaptadores de infraestructura (API REST, persistencia)
-- Componer toda la aplicación en el Composition Root
-- Escribir tests que demuestren la separación de capas
-
----
-
-## 📁 Estructura del Proyecto
-
-```
-3-proyecto/
-├── README.md
-├── starter/                    # Código inicial (para el estudiante)
-│   ├── pyproject.toml
-│   ├── .env.example
-│   ├── Dockerfile
-│   ├── docker-compose.yml
-│   └── src/
-│       ├── main.py             # Entry point
-│       ├── domain/             # Capa de dominio
-│       │   ├── entities/       # Entidades
-│       │   ├── value_objects/  # Value Objects
-│       │   ├── ports/          # Interfaces (Protocol)
-│       │   ├── services/       # Domain Services
-│       │   └── exceptions.py   # Excepciones de dominio
-│       ├── application/        # Capa de aplicación
-│       │   ├── commands/       # Comandos (write)
-│       │   ├── queries/        # Queries (read)
-│       │   ├── dtos/           # Data Transfer Objects
-│       │   └── services/       # Application Services
-│       └── infrastructure/     # Capa de infraestructura
-│           ├── config.py       # Configuración
-│           ├── persistence/    # Adaptadores de persistencia
-│           └── api/            # Adaptadores HTTP
-│               ├── schemas/    # Pydantic schemas
-│               ├── routers/    # FastAPI routers
-│               ├── dependencies.py
-│               └── main.py     # Composition Root
-└── solution/                   # Solución completa (oculta)
-```
+| Dominio | Aggregate Root | Value Objects | Domain Events |
+|---------|---------------|---------------|---------------|
+| 🍝 **Restaurante** | Order | Money, TableNumber | OrderPlaced, OrderCompleted |
+| 📚 **Biblioteca** | Loan | ISBN, MemberID | BookBorrowed, BookReturned |
+| 🏥 **Clínica Veterinaria** | Appointment | PetID, TimeSlot | AppointmentScheduled |
+| 💊 **Farmacia** | Sale | PrescriptionCode | SaleCompleted, StockUpdated |
+| 🏋️ **Gimnasio** | Membership | MemberID, PlanType | MembershipActivated |
 
 ---
 
-## 🏗️ Modelo de Dominio
+## 🎯 Objetivo
 
-### Entidades
+Implementar una **Arquitectura Hexagonal completa** con:
 
-#### Task (Tarea)
-```
-Task
-├── id: UUID (identidad)
-├── title: str
-├── description: str
-├── status: TaskStatus (Value Object)
-├── priority: Priority (Value Object)
-├── project_id: UUID | None
-├── assignee_id: UUID | None
-├── due_date: datetime | None
-├── created_at: datetime
-└── updated_at: datetime
-
-Comportamientos:
-├── start() → cambiar a IN_PROGRESS
-├── complete() → cambiar a COMPLETED
-├── assign_to(user_id) → asignar usuario
-└── set_due_date(date) → establecer fecha límite
-```
-
-#### Project (Proyecto)
-```
-Project
-├── id: UUID (identidad)
-├── name: str
-├── description: str
-├── owner_id: UUID
-├── created_at: datetime
-└── updated_at: datetime
-
-Comportamientos:
-└── add_task(task) → agregar tarea al proyecto
-```
-
-#### User (Usuario)
-```
-User
-├── id: UUID (identidad)
-├── email: str
-├── name: str
-├── created_at: datetime
-└── is_active: bool
-```
-
-### Value Objects
-
-- **TaskStatus**: PENDING, IN_PROGRESS, COMPLETED, CANCELLED
-- **Priority**: LOW (1), MEDIUM (2), HIGH (3), URGENT (4)
+- Domain Layer (Entities, Value Objects, Domain Events)
+- Application Layer (Use Cases, DTOs)
+- Infrastructure Layer (Repositories, Adapters)
 
 ---
 
-## 📋 Casos de Uso a Implementar
+## 📦 Requisitos Funcionales (Adapta a tu Dominio)
 
-### Tasks
-1. **CreateTask** - Crear nueva tarea
-2. **GetTask** - Obtener tarea por ID
-3. **ListTasks** - Listar tareas (con filtros)
-4. **StartTask** - Iniciar tarea
-5. **CompleteTask** - Completar tarea
-6. **AssignTask** - Asignar tarea a usuario
-7. **DeleteTask** - Eliminar tarea
+### Capas de la Arquitectura
 
-### Projects
-1. **CreateProject** - Crear proyecto
-2. **GetProject** - Obtener proyecto
-3. **ListProjects** - Listar proyectos
-4. **AddTaskToProject** - Agregar tarea a proyecto
+```
+┌────────────────────────────────────────────┐
+│              INFRASTRUCTURE                │
+│  (FastAPI, SQLAlchemy, External Services)  │
+└─────────────────────┬──────────────────────┘
+                      │ depends on
+┌─────────────────────▼──────────────────────┐
+│               APPLICATION                  │
+│     (Use Cases, DTOs, Ports/Interfaces)    │
+└─────────────────────┬──────────────────────┘
+                      │ depends on
+┌─────────────────────▼──────────────────────┐
+│                 DOMAIN                     │
+│ (Entities, Value Objects, Domain Events)   │
+└────────────────────────────────────────────┘
+```
 
-### Users
-1. **CreateUser** - Crear usuario
-2. **GetUser** - Obtener usuario
-3. **ListUsers** - Listar usuarios
-
----
-
-## 🔌 Puertos (Interfaces)
+### Domain Layer
 
 ```python
-# Ports que debes implementar
+# Aggregate Root
+class {Entity}(AggregateRoot):
+    id: {Entity}Id
+    # Value Objects como atributos
+    
+    def {action}(self, ...) -> None:
+        # Lógica de negocio
+        self._raise_event({DomainEvent}(...))
 
-class TaskRepository(Protocol):
-    def save(self, task: Task) -> None: ...
-    def find_by_id(self, id: UUID) -> Task | None: ...
-    def find_all(self, filters: TaskFilters) -> list[Task]: ...
-    def delete(self, id: UUID) -> bool: ...
+# Value Object
+@dataclass(frozen=True)
+class {ValueObject}:
+    value: ...
+    
+    def __post_init__(self):
+        # Validaciones
+```
 
-class ProjectRepository(Protocol):
-    def save(self, project: Project) -> None: ...
-    def find_by_id(self, id: UUID) -> Project | None: ...
-    def find_all(self) -> list[Project]: ...
+### Application Layer (Use Cases)
 
-class UserRepository(Protocol):
-    def save(self, user: User) -> None: ...
-    def find_by_id(self, id: UUID) -> User | None: ...
-    def find_by_email(self, email: str) -> User | None: ...
+```python
+class {Action}{Entity}UseCase:
+    def __init__(self, repository: I{Entity}Repository):
+        self._repository = repository
+    
+    async def execute(self, command: {Command}) -> {Result}:
+        # Orquestar lógica
 ```
 
 ---
 
-## 🛠️ Endpoints API
+## 🗂️ Estructura del Proyecto
 
-### Tasks
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/api/v1/tasks` | Crear tarea |
-| GET | `/api/v1/tasks` | Listar tareas |
-| GET | `/api/v1/tasks/{id}` | Obtener tarea |
-| PUT | `/api/v1/tasks/{id}/start` | Iniciar tarea |
-| PUT | `/api/v1/tasks/{id}/complete` | Completar tarea |
-| PUT | `/api/v1/tasks/{id}/assign` | Asignar tarea |
-| DELETE | `/api/v1/tasks/{id}` | Eliminar tarea |
-
-### Projects
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/api/v1/projects` | Crear proyecto |
-| GET | `/api/v1/projects` | Listar proyectos |
-| GET | `/api/v1/projects/{id}` | Obtener proyecto |
-| POST | `/api/v1/projects/{id}/tasks` | Agregar tarea |
-
-### Users
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/api/v1/users` | Crear usuario |
-| GET | `/api/v1/users` | Listar usuarios |
-| GET | `/api/v1/users/{id}` | Obtener usuario |
-
----
-
-## ⏱️ Tiempo Estimado
-
-| Fase | Tiempo |
-|------|--------|
-| Domain Layer | 45 min |
-| Application Layer | 45 min |
-| Infrastructure Layer | 60 min |
-| Composition Root | 30 min |
-| **Total** | **3 horas** |
-
----
-
-## 📝 Instrucciones
-
-### 1. Configurar Entorno
-
-```bash
-cd starter
-cp .env.example .env
-docker compose up -d
 ```
-
-### 2. Implementar por Capas
-
-**Orden recomendado:**
-
-1. **Domain Layer** (de adentro hacia afuera)
-   - Value Objects (TaskStatus, Priority)
-   - Entities (Task, Project, User)
-   - Ports (TaskRepository, ProjectRepository, UserRepository)
-   - Exceptions
-
-2. **Application Layer**
-   - DTOs
-   - Commands y Queries
-   - Services (orquestradores)
-
-3. **Infrastructure Layer**
-   - Config (Settings)
-   - Persistence adapters
-   - API schemas
-   - API routers
-   - Error handlers
-
-4. **Composition Root**
-   - dependencies.py
-   - main.py
-
-### 3. Probar
-
-```bash
-# Ejecutar servidor
-docker compose up
-
-# Probar endpoints
-curl http://localhost:8000/docs
+starter/
+├── main.py
+├── domain/
+│   ├── entities/
+│   ├── value_objects/
+│   ├── events/
+│   └── exceptions.py
+├── application/
+│   ├── use_cases/
+│   ├── dtos/
+│   └── ports/
+├── infrastructure/
+│   ├── api/
+│   ├── persistence/
+│   └── adapters/
+├── pyproject.toml
+├── Dockerfile
+└── docker-compose.yml
 ```
 
 ---
 
 ## ✅ Criterios de Evaluación
 
-### Conocimiento (30%)
-- [ ] Explica la arquitectura hexagonal y sus beneficios
-- [ ] Identifica correctamente cada capa y su responsabilidad
-- [ ] Comprende la inversión de dependencias
-
-### Desempeño (40%)
-- [ ] Domain Layer implementado correctamente
-- [ ] Application Layer con casos de uso funcionales
-- [ ] Infrastructure Layer con adaptadores completos
-- [ ] Composition Root ensamblando todo
-
-### Producto (30%)
-- [ ] API funcional con todos los endpoints
-- [ ] Código limpio y bien organizado
-- [ ] Tests básicos pasando
+| Criterio | Puntos |
+|----------|--------|
+| **Funcionalidad** (40%) | |
+| Domain Layer completo | 15 |
+| Use Cases implementados | 15 |
+| Infrastructure funcional | 10 |
+| **Adaptación al Dominio** (35%) | |
+| Aggregate Root coherente | 12 |
+| Value Objects del negocio | 13 |
+| Originalidad (no copia) | 10 |
+| **Calidad del Código** (25%) | |
+| Separación de capas | 10 |
+| Domain Events implementados | 10 |
+| Código limpio | 5 |
+| **Total** | **100** |
 
 ---
 
-## 🎁 Bonus
+## ⚠️ Política Anticopia
 
-- Implementar filtros avanzados en ListTasks
-- Agregar validaciones de negocio en el dominio
-- Implementar SQLite como segundo adaptador de persistencia
-- Agregar tests de integración
+- ❌ **No uses** "Task/TaskManagement" genéricos
+- ✅ **Diseña** un Aggregate Root de tu dominio
+- ✅ **Implementa** Value Objects específicos
 
 ---
 
 ## 📚 Recursos
 
-- [Teoría: Arquitectura Hexagonal](../1-teoria/01-arquitectura-hexagonal-overview.md)
-- [Práctica: Domain Modeling](../2-practicas/01-domain-modeling/)
-- [Práctica: Wiring](../2-practicas/04-wiring-composition/)
+- [Domain-Driven Design](https://martinfowler.com/tags/domain%20driven%20design.html)
+- [Pool de Dominios](../../../_apprentices-only/dominios/POOL-DOMINIOS.md)
 
 ---
 
-_¡Éxito con tu proyecto! 🚀_
+**Tiempo estimado:** 3 horas
+
+[← Volver a Prácticas](../2-practicas/) | [Recursos →](../4-recursos/)
