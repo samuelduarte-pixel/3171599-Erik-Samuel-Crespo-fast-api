@@ -28,10 +28,10 @@ Al finalizar esta semana, serás capaz de:
 
 | Ejercicio | Descripción | Duración |
 |-----------|-------------|----------|
-| [ejercicio-01](2-practicas/ejercicio-01-response-models/) | Modelos de respuesta tipados | 30 min |
-| [ejercicio-02](2-practicas/ejercicio-02-status-codes/) | Códigos de estado apropiados | 35 min |
-| [ejercicio-03](2-practicas/ejercicio-03-errores/) | Manejo de errores y excepciones | 40 min |
-| [ejercicio-04](2-practicas/ejercicio-04-documentacion/) | Documentación OpenAPI | 35 min |
+| [ejercicio-01](2-practicas/01-ejercicio-response-models/) | Modelos de respuesta tipados | 30 min |
+| [ejercicio-02](2-practicas/02-ejercicio-status-codes/) | Códigos de estado apropiados | 35 min |
+| [ejercicio-03](2-practicas/03-ejercicio-errores/) | Manejo de errores y excepciones | 40 min |
+| [ejercicio-04](2-practicas/04-ejercicio-documentacion/) | Documentación OpenAPI | 35 min |
 
 ### 3. Proyecto
 
@@ -82,10 +82,10 @@ week-04/
 │   └── 05-documentacion-openapi.md
 ├── 2-practicas/
 │   ├── README.md
-│   ├── ejercicio-01-response-models/
-│   ├── ejercicio-02-status-codes/
-│   ├── ejercicio-03-errores/
-│   └── ejercicio-04-documentacion/
+│   ├── 01-ejercicio-response-models/
+│   ├── 02-ejercicio-status-codes/
+│   ├── 03-ejercicio-errores/
+│   └── 04-ejercicio-documentacion/
 ├── 3-proyecto/
 │   ├── README.md
 │   ├── starter/

@@ -28,10 +28,10 @@ Al finalizar esta semana, serás capaz de:
 
 | Ejercicio | Descripción | Duración |
 |-----------|-------------|----------|
-| [ejercicio-01](2-practicas/ejercicio-01-rutas/) | Rutas CRUD básicas | 30 min |
-| [ejercicio-02](2-practicas/ejercicio-02-path-params/) | Path parameters con validación | 35 min |
-| [ejercicio-03](2-practicas/ejercicio-03-query-params/) | Filtrado y paginación | 40 min |
-| [ejercicio-04](2-practicas/ejercicio-04-combinados/) | Parámetros combinados | 35 min |
+| [ejercicio-01](2-practicas/01-ejercicio-rutas/) | Rutas CRUD básicas | 30 min |
+| [ejercicio-02](2-practicas/02-ejercicio-path-params/) | Path parameters con validación | 35 min |
+| [ejercicio-03](2-practicas/03-ejercicio-query-params/) | Filtrado y paginación | 40 min |
+| [ejercicio-04](2-practicas/04-ejercicio-combinados/) | Parámetros combinados | 35 min |
 
 ### 3. Proyecto
 
@@ -81,10 +81,10 @@ week-03/
 │   └── 05-parametros-avanzados.md
 ├── 2-practicas/
 │   ├── README.md
-│   ├── ejercicio-01-rutas/
-│   ├── ejercicio-02-path-params/
-│   ├── ejercicio-03-query-params/
-│   └── ejercicio-04-combinados/
+│   ├── 01-ejercicio-rutas/
+│   ├── 02-ejercicio-path-params/
+│   ├── 03-ejercicio-query-params/
+│   └── 04-ejercicio-combinados/
 ├── 3-proyecto/
 │   ├── README.md
 │   ├── starter/

@@ -37,10 +37,10 @@ week-01/
 │   ├── 04-async-await.md
 │   └── 05-intro-fastapi.md
 ├── 2-practicas/                   # Ejercicios guiados
-│   ├── ejercicio-01-setup/
-│   ├── ejercicio-02-type-hints/
-│   ├── ejercicio-03-async/
-│   └── ejercicio-04-primera-api/
+│   ├── 01-ejercicio-setup/
+│   ├── 02-ejercicio-type-hints/
+│   ├── 03-ejercicio-async/
+│   └── 04-ejercicio-primera-api/
 ├── 3-proyecto/                    # Proyecto semanal
 │   └── api-saludo/
 ├── 4-recursos/                    # Material adicional

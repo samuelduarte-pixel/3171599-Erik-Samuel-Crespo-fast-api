@@ -4,10 +4,10 @@
 
 | # | Ejercicio | Tema | Duración |
 |---|-----------|------|----------|
-| 1 | [ejercicio-01-rutas](ejercicio-01-rutas/) | Rutas CRUD básicas | 30 min |
-| 2 | [ejercicio-02-path-params](ejercicio-02-path-params/) | Path parameters con validación | 35 min |
-| 3 | [ejercicio-03-query-params](ejercicio-03-query-params/) | Filtrado y paginación | 40 min |
-| 4 | [ejercicio-04-combinados](ejercicio-04-combinados/) | Parámetros combinados | 35 min |
+| 1 | [01-ejercicio-rutas](01-ejercicio-rutas/) | Rutas CRUD básicas | 30 min |
+| 2 | [02-ejercicio-path-params](02-ejercicio-path-params/) | Path parameters con validación | 35 min |
+| 3 | [03-ejercicio-query-params](03-ejercicio-query-params/) | Filtrado y paginación | 40 min |
+| 4 | [04-ejercicio-combinados](04-ejercicio-combinados/) | Parámetros combinados | 35 min |
 
 ---
 

@@ -29,10 +29,10 @@ Al finalizar esta semana, serás capaz de:
 
 | # | Ejercicio | Duración |
 |---|-----------|----------|
-| 01 | [Relación 1:N - Author → Posts](2-practicas/ejercicio-01-relacion-uno-a-muchos/) | 40 min |
-| 02 | [Relación N:M - Posts ↔ Tags](2-practicas/ejercicio-02-relacion-muchos-a-muchos/) | 40 min |
-| 03 | [Queries con Relaciones](2-practicas/ejercicio-03-queries-relaciones/) | 35 min |
-| 04 | [Refactorizar a Services](2-practicas/ejercicio-04-service-layer/) | 45 min |
+| 01 | [Relación 1:N - Author → Posts](2-practicas/01-ejercicio-relacion-uno-a-muchos/) | 40 min |
+| 02 | [Relación N:M - Posts ↔ Tags](2-practicas/02-ejercicio-relacion-muchos-a-muchos/) | 40 min |
+| 03 | [Queries con Relaciones](2-practicas/03-ejercicio-queries-relaciones/) | 35 min |
+| 04 | [Refactorizar a Services](2-practicas/04-ejercicio-service-layer/) | 45 min |
 
 ### 3. Proyecto
 

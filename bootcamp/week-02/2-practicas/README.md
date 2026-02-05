@@ -10,10 +10,10 @@ Ejercicios prácticos para dominar Pydantic v2 y su integración con FastAPI.
 
 | # | Ejercicio | Tema | Duración |
 |---|-----------|------|----------|
-| 01 | [BaseModel Básico](ejercicio-01-basemodel/) | Crear modelos, campos, configuración | 30 min |
-| 02 | [Field y Restricciones](ejercicio-02-field/) | Field(), tipos especiales, constraints | 40 min |
-| 03 | [Validadores](ejercicio-03-validadores/) | @field_validator, @model_validator | 45 min |
-| 04 | [Integración FastAPI](ejercicio-04-integracion/) | Schemas CRUD, response_model | 45 min |
+| 01 | [BaseModel Básico](01-ejercicio-basemodel/) | Crear modelos, campos, configuración | 30 min |
+| 02 | [Field y Restricciones](02-ejercicio-field/) | Field(), tipos especiales, constraints | 40 min |
+| 03 | [Validadores](03-ejercicio-validadores/) | @field_validator, @model_validator | 45 min |
+| 04 | [Integración FastAPI](04-ejercicio-integracion/) | Schemas CRUD, response_model | 45 min |
 
 **Tiempo total estimado:** ~2.5 horas
 

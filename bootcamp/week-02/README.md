@@ -40,10 +40,10 @@ week-02/
 │   ├── 04-field-types.md
 │   └── 05-pydantic-fastapi.md
 ├── 2-practicas/                   # Ejercicios guiados
-│   ├── ejercicio-01-basemodel/
-│   ├── ejercicio-02-field/
-│   ├── ejercicio-03-validadores/
-│   └── ejercicio-04-integracion/
+│   ├── 01-ejercicio-basemodel/
+│   ├── 02-ejercicio-field/
+│   ├── 03-ejercicio-validadores/
+│   └── 04-ejercicio-integracion/
 ├── 3-proyecto/                    # Proyecto semanal
 │   ├── starter/
 │   └── solution/                  # (gitignored)
@@ -73,10 +73,10 @@ week-02/
 
 | Ejercicio | Duración | Tema |
 |-----------|----------|------|
-| [01-basemodel](2-practicas/ejercicio-01-basemodel/) | 30 min | Crear modelos básicos |
-| [02-field](2-practicas/ejercicio-02-field/) | 30 min | Configurar campos con Field |
-| [03-validadores](2-practicas/ejercicio-03-validadores/) | 30 min | Validadores personalizados |
-| [04-integracion](2-practicas/ejercicio-04-integracion/) | 30 min | Pydantic en endpoints FastAPI |
+| [01-basemodel](2-practicas/01-ejercicio-basemodel/) | 30 min | Crear modelos básicos |
+| [02-field](2-practicas/02-ejercicio-field/) | 30 min | Configurar campos con Field |
+| [03-validadores](2-practicas/03-ejercicio-validadores/) | 30 min | Validadores personalizados |
+| [04-integracion](2-practicas/04-ejercicio-integracion/) | 30 min | Pydantic en endpoints FastAPI |
 
 ### 3️⃣ Proyecto (1.5-2 horas)
 

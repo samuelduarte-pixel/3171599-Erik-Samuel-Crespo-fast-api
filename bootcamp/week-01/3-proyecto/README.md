@@ -180,7 +180,7 @@ def get_time_greeting(hour: int) -> str:
 ## 📚 Recursos de Apoyo
 
 - [Teoría: Introducción a FastAPI](../1-teoria/05-intro-fastapi.md)
-- [Ejercicio 04: Primera API](../2-practicas/ejercicio-04-primera-api/)
+- [Ejercicio 04: Primera API](../2-practicas/04-ejercicio-primera-api/)
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
 
 ---

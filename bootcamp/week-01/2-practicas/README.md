@@ -10,10 +10,10 @@ Consolidar los conceptos aprendidos en la teoría mediante ejercicios prácticos
 
 | # | Ejercicio | Duración | Tema |
 |---|-----------|----------|------|
-| 1 | [Setup del Entorno](ejercicio-01-setup/) | 30 min | Docker + uv |
-| 2 | [Type Hints en Práctica](ejercicio-02-type-hints/) | 30 min | Tipado estático |
-| 3 | [Programación Asíncrona](ejercicio-03-async/) | 30 min | async/await |
-| 4 | [Primera API FastAPI](ejercicio-04-primera-api/) | 30 min | Endpoints básicos |
+| 1 | [Setup del Entorno](01-ejercicio-setup/) | 30 min | Docker + uv |
+| 2 | [Type Hints en Práctica](02-ejercicio-type-hints/) | 30 min | Tipado estático |
+| 3 | [Programación Asíncrona](03-ejercicio-async/) | 30 min | async/await |
+| 4 | [Primera API FastAPI](04-ejercicio-primera-api/) | 30 min | Endpoints básicos |
 
 **Tiempo total estimado:** 2 horas
 
@@ -48,4 +48,4 @@ Para considerar un ejercicio completado:
 
 Sigue el orden de los ejercicios para una progresión óptima:
 
-1. [Ejercicio 01: Setup del Entorno →](ejercicio-01-setup/)
+1. [Ejercicio 01: Setup del Entorno →](01-ejercicio-setup/)

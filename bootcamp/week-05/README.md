@@ -28,10 +28,10 @@ Al finalizar esta semana, serás capaz de:
 
 | Ejercicio | Tema | Duración |
 |-----------|------|----------|
-| [ejercicio-01](2-practicas/ejercicio-01-configuracion/) | Configurar SQLAlchemy con SQLite | 30 min |
-| [ejercicio-02](2-practicas/ejercicio-02-modelos/) | Crear modelos declarativos | 35 min |
-| [ejercicio-03](2-practicas/ejercicio-03-crud/) | Operaciones CRUD básicas | 40 min |
-| [ejercicio-04](2-practicas/ejercicio-04-fastapi-db/) | Integrar con FastAPI | 35 min |
+| [ejercicio-01](2-practicas/01-ejercicio-configuracion/) | Configurar SQLAlchemy con SQLite | 30 min |
+| [ejercicio-02](2-practicas/02-ejercicio-modelos/) | Crear modelos declarativos | 35 min |
+| [ejercicio-03](2-practicas/03-ejercicio-crud/) | Operaciones CRUD básicas | 40 min |
+| [ejercicio-04](2-practicas/04-ejercicio-fastapi-db/) | Integrar con FastAPI | 35 min |
 
 ### 3. Proyecto
 
@@ -59,10 +59,10 @@ week-05/
 │   └── 05-integracion-fastapi.md
 ├── 2-practicas/
 │   ├── README.md
-│   ├── ejercicio-01-configuracion/
-│   ├── ejercicio-02-modelos/
-│   ├── ejercicio-03-crud/
-│   └── ejercicio-04-fastapi-db/
+│   ├── 01-ejercicio-configuracion/
+│   ├── 02-ejercicio-modelos/
+│   ├── 03-ejercicio-crud/
+│   └── 04-ejercicio-fastapi-db/
 ├── 3-proyecto/
 │   ├── README.md
 │   ├── starter/

@@ -4,10 +4,10 @@
 
 | # | Ejercicio | Tema | Duración |
 |---|-----------|------|----------|
-| 01 | [Response Models](ejercicio-01-response-models/) | Modelos de respuesta tipados | 30 min |
-| 02 | [Status Codes](ejercicio-02-status-codes/) | Códigos HTTP apropiados | 35 min |
-| 03 | [Manejo de Errores](ejercicio-03-errores/) | HTTPException y handlers | 40 min |
-| 04 | [Documentación](ejercicio-04-documentacion/) | OpenAPI y Swagger | 35 min |
+| 01 | [Response Models](01-ejercicio-response-models/) | Modelos de respuesta tipados | 30 min |
+| 02 | [Status Codes](02-ejercicio-status-codes/) | Códigos HTTP apropiados | 35 min |
+| 03 | [Manejo de Errores](03-ejercicio-errores/) | HTTPException y handlers | 40 min |
+| 04 | [Documentación](04-ejercicio-documentacion/) | OpenAPI y Swagger | 35 min |
 
 ---
 

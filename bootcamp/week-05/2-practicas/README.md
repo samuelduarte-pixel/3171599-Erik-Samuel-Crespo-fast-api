@@ -4,10 +4,10 @@
 
 | # | Ejercicio | Tema | Duración |
 |---|-----------|------|----------|
-| 01 | [Configuración SQLAlchemy](ejercicio-01-configuracion/) | Engine, Session, Base | 30 min |
-| 02 | [Modelos Declarativos](ejercicio-02-modelos/) | Mapped, mapped_column, tipos | 40 min |
-| 03 | [Operaciones CRUD](ejercicio-03-crud/) | Create, Read, Update, Delete | 45 min |
-| 04 | [FastAPI + Database](ejercicio-04-fastapi-db/) | Dependency Injection, endpoints | 45 min |
+| 01 | [Configuración SQLAlchemy](01-ejercicio-configuracion/) | Engine, Session, Base | 30 min |
+| 02 | [Modelos Declarativos](02-ejercicio-modelos/) | Mapped, mapped_column, tipos | 40 min |
+| 03 | [Operaciones CRUD](03-ejercicio-crud/) | Create, Read, Update, Delete | 45 min |
+| 04 | [FastAPI + Database](04-ejercicio-fastapi-db/) | Dependency Injection, endpoints | 45 min |
 
 **Tiempo total estimado:** ~2.5 horas
 
