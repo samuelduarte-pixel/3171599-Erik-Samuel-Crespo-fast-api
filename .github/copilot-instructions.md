@@ -38,7 +38,7 @@ Al finalizar el bootcamp, los estudiantes serán capaces de:
 
 #### **Fundamentos (Semanas 1-4)** - 24 horas
 
-- Introducción a Python moderno (3.12+)
+- Introducción a Python moderno (3.14+)
 - Type hints y tipado estático
 - Programación asíncrona (async/await)
 - Introducción a FastAPI y primeras APIs
