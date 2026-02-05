@@ -100,11 +100,16 @@ week-02/
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-1. **Ejercicios completados** - Código descomentado y funcionando
-2. **Proyecto semanal** - API de Gestión de Usuarios
-3. **Cuestionario teórico** - Evaluación de conocimientos
+**Proyecto: [Contacts API](3-proyecto/)**
+
+API de gestión de contactos funcionando con:
+
+- [ ] CRUD completo de contactos
+- [ ] Validación robusta con Pydantic v2
+- [ ] Schemas separados (Create, Update, Response)
+- [ ] Documentación Swagger completa
 
 ---
 

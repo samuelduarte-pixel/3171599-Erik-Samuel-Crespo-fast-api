@@ -59,32 +59,17 @@ Al finalizar esta semana serás capaz de:
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-### Obligatorios
+**Proyecto Final**
 
-1. **Proyecto Final Funcionando**
-   - API desplegada y accesible
-   - Documentación completa
-   - Tests pasando
-   - CI/CD configurado
+Aplicación completa lista para producción:
 
-2. **Repositorio GitHub**
-   - README profesional
-   - Código limpio y documentado
-   - Historial de commits claro
-
-3. **Presentación**
-   - Demo de la API
-   - Arquitectura y decisiones técnicas
-   - Lecciones aprendidas
-
-### Opcionales (Bonus)
-
-- [ ] Frontend básico consumiendo la API
-- [ ] Monitoreo con métricas
-- [ ] Rate limiting avanzado
-- [ ] Documentación con ejemplos interactivos
+- [ ] API desplegada y accesible
+- [ ] Repositorio GitHub con README profesional
+- [ ] Código limpio, documentado y testeado
+- [ ] CI/CD configurado
+- [ ] Presentación con demo, arquitectura y lecciones aprendidas
 
 ---
 

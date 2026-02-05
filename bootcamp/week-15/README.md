@@ -133,15 +133,16 @@ week-15/
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-Al finalizar esta semana deberás entregar:
+**Proyecto: [Tasks API - Production Ready](3-proyecto/)**
 
-1. **Dockerfile optimizado** para tu API FastAPI
-2. **docker-compose.yml** con stack completo (API + DB + Redis)
-3. **Workflow de GitHub Actions** con tests, lint y build
-4. **Documentación** de cómo hacer deploy
-5. **Proyecto funcionando** en un servicio cloud (opcional)
+API lista para producción con:
+
+- [ ] Dockerfile optimizado (multi-stage build)
+- [ ] docker-compose.yml con stack completo (API + DB + Redis)
+- [ ] Workflow de GitHub Actions (tests, lint, build)
+- [ ] Documentación de deployment
 
 ---
 

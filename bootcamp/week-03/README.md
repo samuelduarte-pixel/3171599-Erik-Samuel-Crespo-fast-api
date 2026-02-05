@@ -99,11 +99,16 @@ week-03/
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-1. **Ejercicios completados** (4 ejercicios)
-2. **Proyecto funcional** (API de Catálogo)
-3. **Quiz teórico** (opcional)
+**Proyecto: [Catálogo de Productos](3-proyecto/)**
+
+API de catálogo de productos funcionando con:
+
+- [ ] Path parameters con validación
+- [ ] Query parameters para filtrado y paginación
+- [ ] Combinación de parámetros en endpoints complejos
+- [ ] Documentación Swagger completa
 
 ---
 

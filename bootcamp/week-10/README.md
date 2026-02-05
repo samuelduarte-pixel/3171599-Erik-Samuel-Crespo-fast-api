@@ -161,22 +161,16 @@ week-10/
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-### Obligatorios
+**Proyecto: [Task Management System](3-proyecto/)**
 
-1. **Prácticas completadas**: 4 ejercicios con código funcional
-2. **Proyecto Task Management**: Sistema completo con:
-   - Domain Layer con entidades Task, Project, User
-   - Application Layer con use cases CRUD + asignación
-   - Infrastructure Layer con persistencia y API REST
-   - Tests unitarios e integración
+Sistema de gestión de tareas con arquitectura hexagonal:
 
-### Opcionales (Bonus)
-
-- Agregar Domain Events (TaskCreated, TaskCompleted)
-- Implementar un segundo adapter de persistencia (JSON file)
-- Añadir validaciones de negocio complejas en el dominio
+- [ ] Domain Layer con entidades Task, Project, User
+- [ ] Application Layer con use cases CRUD + asignación
+- [ ] Infrastructure Layer con persistencia y API REST
+- [ ] Tests unitarios e integración
 
 ---
 

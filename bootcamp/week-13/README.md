@@ -110,12 +110,16 @@ week-13/
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-1. **Ejercicios de prácticas** completados
-2. **Proyecto**: Chat en tiempo real funcional
-3. **Tests**: WebSocket y SSE testeados
-4. **Cliente HTML**: Interfaz funcional
+**Proyecto: [Realtime Chat](3-proyecto/)**
+
+Chat en tiempo real funcionando con:
+
+- [ ] WebSocket para mensajes instantáneos
+- [ ] SSE para notificaciones
+- [ ] Cliente HTML funcional
+- [ ] Tests para WebSocket y SSE
 
 ---
 

@@ -166,16 +166,17 @@ dev = [
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-1. **Prácticas completadas** (4 ejercicios guiados)
-2. **Proyecto funcional** con:
-   - Rate limiting configurado (por IP y por usuario)
-   - Security headers implementados
-   - Logging estructurado con contexto
-   - Métricas Prometheus expuestas
-   - Health checks (liveness + readiness)
-3. **Tests pasando** para todas las funcionalidades
+**Proyecto: [Secure Observable API](3-proyecto/)**
+
+API segura con observabilidad funcionando con:
+
+- [ ] Rate limiting configurado (por IP y por usuario)
+- [ ] Security headers implementados
+- [ ] Logging estructurado con contexto
+- [ ] Métricas Prometheus expuestas
+- [ ] Health checks (liveness + readiness)
 
 ---
 

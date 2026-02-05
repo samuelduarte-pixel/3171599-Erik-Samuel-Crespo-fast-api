@@ -99,11 +99,16 @@ dev = [
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-1. **Prácticas completadas**: 4 ejercicios de testing
-2. **Proyecto**: Suite de tests con >80% cobertura
-3. **Tests pasando**: `pytest` sin errores
+**Proyecto: [Task Manager Tests](3-proyecto/)**
+
+Suite de tests completa con:
+
+- [ ] Tests unitarios para servicios
+- [ ] Tests de integración para endpoints
+- [ ] Fixtures y factories configurados
+- [ ] Cobertura >80% (`pytest --cov`)
 
 ---
 

@@ -97,6 +97,19 @@ Al finalizar esta semana, serás capaz de:
 
 ---
 
+## 📌 Entregable
+
+**Proyecto: [E-Commerce API](3-proyecto/)**
+
+API de e-commerce funcionando con arquitectura MVC completa:
+
+- [ ] Presentation Layer (routers + schemas)
+- [ ] Application Layer (services)
+- [ ] Data Access Layer (repositories)
+- [ ] DTOs y mappers implementados
+
+---
+
 ## 📌 Conceptos Clave
 
 - **Presentation Layer**: Maneja HTTP, serialización, validación de entrada

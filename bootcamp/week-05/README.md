@@ -109,14 +109,16 @@ Antes de comenzar esta semana, debes:
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-1. **Ejercicios completados** (4 ejercicios)
-2. **Proyecto Library API** funcionando con:
-   - CRUD de libros
-   - CRUD de autores
-   - Documentación OpenAPI
-3. **Reflexión** sobre ventajas de usar ORM
+**Proyecto: [Library API](3-proyecto/)**
+
+API de biblioteca funcionando con:
+
+- [ ] CRUD de libros y autores
+- [ ] SQLAlchemy ORM configurado
+- [ ] Base de datos SQLite
+- [ ] Documentación OpenAPI completa
 
 ---
 

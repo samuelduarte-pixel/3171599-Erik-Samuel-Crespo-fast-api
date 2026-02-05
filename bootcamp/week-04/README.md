@@ -100,7 +100,20 @@ week-04/
 
 ---
 
-## 🔗 Navegación
+## � Entregable
+
+**Proyecto: [Task Manager API](3-proyecto/)**
+
+API de gestión de tareas funcionando con:
+
+- [ ] Response models tipados correctamente
+- [ ] Status codes HTTP apropiados
+- [ ] Manejo de errores con HTTPException
+- [ ] Documentación OpenAPI completa
+
+---
+
+## �🔗 Navegación
 
 | Anterior | Siguiente |
 |----------|-----------|

@@ -186,18 +186,11 @@ class UserService:
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-Al finalizar esta semana deberás entregar:
+**Proyecto: [Notification Service](3-proyecto/)**
 
-### 1. Prácticas Completadas (40%)
-
-- [ ] Práctica 01: Ports definidos con Protocols
-- [ ] Práctica 02: Adapters implementados
-- [ ] Práctica 03: Inyección de dependencias funcionando
-- [ ] Práctica 04: Tests con fake adapters
-
-### 2. Proyecto: Notification Service (60%)
+Sistema de notificaciones multi-canal funcionando con:
 
 - [ ] Ports definidos para todos los canales
 - [ ] Adapters: Email, SMS, Push, Webhook

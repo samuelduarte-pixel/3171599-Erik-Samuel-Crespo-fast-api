@@ -119,11 +119,15 @@ src/
 
 ---
 
-## 📦 Entregables
+## � Entregable
 
-1. **Ejercicios completados**: 4 ejercicios con código funcional
-2. **Proyecto Blog API**: API con relaciones y services implementados
-3. **Tests básicos**: Endpoints probados con Swagger
+**Proyecto: [Blog API](3-proyecto/)**
+
+API de blog funcionando con:
+
+- [ ] Relaciones 1:N y N:M implementadas
+- [ ] Service Layer para lógica de negocio
+- [ ] Endpoints testeados con Swagger
 
 ---
 

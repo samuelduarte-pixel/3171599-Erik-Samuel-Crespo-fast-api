@@ -107,25 +107,16 @@ Crear una API REST básica que:
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-### 🧠 Conocimiento (30%)
+**Proyecto: [Greeting API](3-proyecto/)**
 
-- [ ] Cuestionario sobre Python moderno y FastAPI (10 preguntas)
-- [ ] Identificar errores en código sin type hints
+API de saludo personalizado funcionando en Docker con:
 
-### 💪 Desempeño (40%)
-
-- [ ] Completar los 4 ejercicios prácticos
-- [ ] Código funcional ejecutándose en Docker
-- [ ] Uso correcto de type hints y async/await
-
-### 📦 Producto (30%)
-
-- [ ] Proyecto "API de Saludo" funcional
-- [ ] Código limpio y comentado en inglés
-- [ ] README del proyecto con instrucciones
+- [ ] Endpoints GET y POST implementados
+- [ ] Type hints en todo el código
 - [ ] Documentación Swagger accesible en `/docs`
+- [ ] Código limpio y comentado en inglés
 
 ---
 

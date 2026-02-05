@@ -153,23 +153,17 @@ SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c   ← Signature (firma)
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-### Obligatorios
+**Proyecto: [Auth System](3-proyecto/)**
 
-1. **Prácticas completadas**: 4 ejercicios con código funcional
-2. **Proyecto Auth System**: Sistema completo con:
-   - Registro de usuarios con validación
-   - Login con OAuth2 Password Flow
-   - Generación de access y refresh tokens
-   - Endpoints protegidos con JWT
-   - Logout y revocación de tokens
+Sistema de autenticación completo funcionando con:
 
-### Opcionales (Bonus)
-
-- Implementar "Remember me" con tokens de larga duración
-- Agregar autenticación con Google/GitHub (OAuth2 Authorization Code)
-- Implementar 2FA (Two-Factor Authentication) básico
+- [ ] Registro de usuarios con validación
+- [ ] Login con OAuth2 Password Flow
+- [ ] Generación de access y refresh tokens
+- [ ] Endpoints protegidos con JWT
+- [ ] Logout y revocación de tokens
 
 ---
 

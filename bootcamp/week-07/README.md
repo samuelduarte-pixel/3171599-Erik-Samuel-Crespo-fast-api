@@ -153,14 +153,16 @@ week-07/
 
 ---
 
-## 📌 Entregables
+## 📌 Entregable
 
-1. **Prácticas completadas** (código descomentado y funcionando)
-2. **Proyecto Task Manager** con:
-   - BaseRepository genérico
-   - TaskRepository y UserRepository
-   - TaskService usando repositorios
-   - Tests unitarios básicos
+**Proyecto: [Task Manager](3-proyecto/)**
+
+API de gestión de tareas funcionando con:
+
+- [ ] BaseRepository genérico
+- [ ] TaskRepository y UserRepository
+- [ ] TaskService usando repositorios
+- [ ] Tests unitarios básicos
 
 ---
 
