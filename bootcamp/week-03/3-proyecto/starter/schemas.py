@@ -2,9 +2,7 @@
 Schemas Pydantic
 ================
 
-Define los modelos de datos para validación.
-
-TODO: Completa los schemas siguiendo las instrucciones.
+Modelos de datos para la Tienda de Equipamiento Deportivo.
 """
 
 from pydantic import BaseModel, Field
@@ -17,17 +15,27 @@ from enum import Enum
 # ============================================
 
 class SortOrder(str, Enum):
-    """Orden de clasificación"""
     asc = "asc"
     desc = "desc"
 
 
 class ProductSortField(str, Enum):
-    """Campos para ordenar productos"""
     name = "name"
     price = "price"
     created_at = "created_at"
     stock = "stock"
+
+
+class SportType(str, Enum):
+    football = "football"
+    basketball = "basketball"
+    tennis = "tennis"
+    swimming = "swimming"
+    running = "running"
+    cycling = "cycling"
+    gym = "gym"
+    outdoor = "outdoor"
+    other = "other"
 
 
 # ============================================
@@ -35,27 +43,22 @@ class ProductSortField(str, Enum):
 # ============================================
 
 class CategoryBase(BaseModel):
-    """Schema base para categorías"""
-    name: str = Field(..., min_length=2, max_length=50)
+    name: str = Field(..., min_length=2, max_length=50, description="Category name")
     description: str | None = Field(default=None, max_length=200)
+    sport_type: SportType = Field(default=SportType.other, description="Sport type")
 
 
 class CategoryCreate(CategoryBase):
-    """Schema para crear categoría"""
-    # TODO: Hereda de CategoryBase, no necesita campos adicionales
     pass
 
 
 class CategoryUpdate(BaseModel):
-    """Schema para actualizar categoría"""
-    # TODO: Todos los campos opcionales
-    # name: str | None = None
-    # description: str | None = None
-    pass
+    name: str | None = Field(default=None, min_length=2, max_length=50)
+    description: str | None = Field(default=None, max_length=200)
+    sport_type: SportType | None = None
 
 
 class CategoryResponse(CategoryBase):
-    """Schema de respuesta para categoría"""
     id: int
     created_at: datetime
 
@@ -67,39 +70,41 @@ class CategoryResponse(CategoryBase):
 # ============================================
 
 class ProductBase(BaseModel):
-    """Schema base para productos"""
-    # TODO: Define los campos base
-    # name: str (2-100 chars)
-    # description: str | None (max 500 chars)
-    # price: float (> 0)
-    # stock: int (>= 0, default 0)
-    # tags: list[str] (default [])
-    pass
+    name: str = Field(..., min_length=2, max_length=100, description="Product name")
+    description: str | None = Field(default=None, max_length=500)
+    price: float = Field(..., gt=0, description="Price in USD")
+    stock: int = Field(default=0, ge=0, description="Units in stock")
+    brand: str | None = Field(default=None, max_length=50, description="Brand name")
+    size: str | None = Field(default=None, max_length=20, description="Size: S, M, L, XL, 42, etc.")
+    color: str | None = Field(default=None, max_length=30)
+    gender: str | None = Field(default=None, description="unisex, men, women, kids")
+    tags: list[str] = Field(default=[], description="Tags for search")
 
 
 class ProductCreate(ProductBase):
-    """Schema para crear producto"""
-    # TODO: Añade category_id requerido (> 0)
-    pass
+    category_id: int = Field(..., gt=0, description="Category ID")
 
 
 class ProductUpdate(BaseModel):
-    """Schema para actualización parcial"""
-    # TODO: Todos los campos opcionales
-    # name: str | None
-    # description: str | None
-    # price: float | None
-    # category_id: int | None
-    # stock: int | None
-    # tags: list[str] | None
-    pass
+    name: str | None = Field(default=None, min_length=2, max_length=100)
+    description: str | None = None
+    price: float | None = Field(default=None, gt=0)
+    category_id: int | None = Field(default=None, gt=0)
+    stock: int | None = Field(default=None, ge=0)
+    brand: str | None = None
+    size: str | None = None
+    color: str | None = None
+    gender: str | None = None
+    tags: list[str] | None = None
 
 
 class ProductResponse(ProductBase):
-    """Schema de respuesta para producto"""
-    # TODO: Añade id, category_id, created_at
-    # También incluye category (CategoryResponse | None)
-    pass
+    id: int
+    category_id: int
+    created_at: datetime
+    category: CategoryResponse | None = None
+
+    model_config = {"from_attributes": True}
 
 
 # ============================================
@@ -107,13 +112,10 @@ class ProductResponse(ProductBase):
 # ============================================
 
 class PaginatedResponse(BaseModel):
-    """Schema para respuestas paginadas"""
-    # TODO: Define los campos de paginación
-    # items: list
-    # total: int
-    # page: int
-    # per_page: int
-    # pages: int
-    # has_next: bool
-    # has_prev: bool
-    pass
+    items: list
+    total: int
+    page: int
+    per_page: int
+    pages: int
+    has_next: bool
+    has_prev: bool

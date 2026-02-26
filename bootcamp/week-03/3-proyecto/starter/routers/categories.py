@@ -2,9 +2,7 @@
 Router de Categorías
 ====================
 
-CRUD completo para categorías.
-
-TODO: Implementa los endpoints siguiendo las instrucciones.
+CRUD completo para categorías de equipamiento deportivo.
 """
 
 from fastapi import APIRouter, Path, HTTPException, status
@@ -20,97 +18,84 @@ router = APIRouter(
 )
 
 
-# ============================================
-# GET /categories - Listar todas
-# ============================================
-
 @router.get("/", response_model=list[CategoryResponse])
 async def list_categories():
-    """
-    Listar todas las categorías.
-    
-    TODO: Retorna todas las categorías de categories_db
-    """
-    # TODO: Implementar
-    # return list(categories_db.values())
-    pass
+    """Listar todas las categorías deportivas."""
+    return list(categories_db.values())
 
-
-# ============================================
-# GET /categories/{id} - Obtener una
-# ============================================
 
 @router.get("/{category_id}", response_model=CategoryResponse)
 async def get_category(
     category_id: int = Path(..., gt=0, description="Category ID")
 ):
-    """
-    Obtener una categoría por ID.
-    
-    TODO: 
-    1. Buscar en categories_db
-    2. Si no existe, HTTPException 404
-    3. Retornar la categoría
-    """
-    # TODO: Implementar
-    pass
+    """Obtener una categoría por ID."""
+    if category_id not in categories_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Category {category_id} not found"
+        )
+    return categories_db[category_id]
 
-
-# ============================================
-# POST /categories - Crear
-# ============================================
 
 @router.post("/", response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
 async def create_category(category: CategoryCreate):
-    """
-    Crear una nueva categoría.
-    
-    TODO:
-    1. Obtener nuevo ID con get_next_category_id()
-    2. Crear dict con id, datos del schema, created_at
-    3. Guardar en categories_db
-    4. Retornar la categoría creada
-    """
-    # TODO: Implementar
-    pass
+    """Crear una nueva categoría deportiva."""
+    new_id = get_next_category_id()
+    new_category = {
+        "id": new_id,
+        **category.model_dump(),
+        "created_at": datetime.now()
+    }
+    categories_db[new_id] = new_category
+    return new_category
 
-
-# ============================================
-# PUT /categories/{id} - Actualizar completo
-# ============================================
 
 @router.put("/{category_id}", response_model=CategoryResponse)
 async def update_category(
     category_id: int = Path(..., gt=0),
     category: CategoryCreate = ...
 ):
-    """
-    Actualizar una categoría completamente.
-    
-    TODO:
-    1. Verificar que existe (404 si no)
-    2. Actualizar todos los campos
-    3. Retornar la categoría actualizada
-    """
-    # TODO: Implementar
-    pass
+    """Actualizar una categoría completamente."""
+    if category_id not in categories_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Category {category_id} not found"
+        )
+    existing = categories_db[category_id]
+    updated = {
+        "id": category_id,
+        **category.model_dump(),
+        "created_at": existing["created_at"]
+    }
+    categories_db[category_id] = updated
+    return updated
 
 
-# ============================================
-# DELETE /categories/{id} - Eliminar
-# ============================================
+@router.patch("/{category_id}", response_model=CategoryResponse)
+async def patch_category(
+    category_id: int = Path(..., gt=0),
+    category: CategoryUpdate = ...
+):
+    """Actualizar una categoría parcialmente."""
+    if category_id not in categories_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Category {category_id} not found"
+        )
+    existing = categories_db[category_id]
+    updates = category.model_dump(exclude_unset=True)
+    existing.update(updates)
+    return existing
+
 
 @router.delete("/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_category(
     category_id: int = Path(..., gt=0)
 ):
-    """
-    Eliminar una categoría.
-    
-    TODO:
-    1. Verificar que existe (404 si no)
-    2. Eliminar de categories_db
-    3. Retornar None (204 No Content)
-    """
-    # TODO: Implementar
-    pass
+    """Eliminar una categoría."""
+    if category_id not in categories_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Category {category_id} not found"
+        )
+    del categories_db[category_id]

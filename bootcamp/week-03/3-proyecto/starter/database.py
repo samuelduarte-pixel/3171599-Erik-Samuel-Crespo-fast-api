@@ -2,7 +2,7 @@
 Base de Datos Simulada
 ======================
 
-Datos en memoria para el proyecto.
+Datos en memoria para la Tienda de Equipamiento Deportivo.
 """
 
 from datetime import datetime
@@ -14,31 +14,49 @@ from datetime import datetime
 categories_db: dict[int, dict] = {
     1: {
         "id": 1,
-        "name": "Electronics",
-        "description": "Electronic devices and accessories",
+        "name": "Fútbol",
+        "description": "Equipamiento y accesorios para fútbol",
+        "sport_type": "football",
         "created_at": datetime(2024, 1, 1, 10, 0, 0)
     },
     2: {
         "id": 2,
-        "name": "Books",
-        "description": "Physical and digital books",
+        "name": "Baloncesto",
+        "description": "Ropa, calzado y balones de baloncesto",
+        "sport_type": "basketball",
         "created_at": datetime(2024, 1, 1, 10, 0, 0)
     },
     3: {
         "id": 3,
-        "name": "Clothing",
-        "description": "Apparel and accessories",
+        "name": "Running",
+        "description": "Zapatillas, ropa y accesorios para correr",
+        "sport_type": "running",
         "created_at": datetime(2024, 1, 1, 10, 0, 0)
     },
     4: {
         "id": 4,
-        "name": "Home & Garden",
-        "description": "Home decor and garden supplies",
+        "name": "Gimnasio",
+        "description": "Equipamiento y ropa para entrenamiento en gimnasio",
+        "sport_type": "gym",
+        "created_at": datetime(2024, 1, 1, 10, 0, 0)
+    },
+    5: {
+        "id": 5,
+        "name": "Natación",
+        "description": "Trajes de baño, gafas y accesorios de natación",
+        "sport_type": "swimming",
+        "created_at": datetime(2024, 1, 1, 10, 0, 0)
+    },
+    6: {
+        "id": 6,
+        "name": "Ciclismo",
+        "description": "Bicicletas, cascos, ropa y accesorios de ciclismo",
+        "sport_type": "cycling",
         "created_at": datetime(2024, 1, 1, 10, 0, 0)
     },
 }
 
-next_category_id = 5
+next_category_id = 7
 
 # ============================================
 # PRODUCTOS
@@ -47,87 +65,147 @@ next_category_id = 5
 products_db: dict[int, dict] = {
     1: {
         "id": 1,
-        "name": "Laptop Pro 15",
-        "description": "High-performance laptop with 16GB RAM",
-        "price": 1299.99,
+        "name": "Balón de Fútbol Nike Strike",
+        "description": "Balón oficial de entrenamiento con tecnología AeroW Trac",
+        "price": 39.99,
         "category_id": 1,
-        "stock": 25,
-        "tags": ["new", "featured", "bestseller"],
+        "stock": 80,
+        "brand": "Nike",
+        "size": "5",
+        "color": "Blanco/Negro",
+        "gender": "unisex",
+        "tags": ["balon", "futbol", "entrenamiento", "nike"],
         "created_at": datetime(2024, 1, 15, 9, 0, 0)
     },
     2: {
         "id": 2,
-        "name": "Wireless Mouse",
-        "description": "Ergonomic wireless mouse with long battery",
-        "price": 29.99,
+        "name": "Guayos Adidas Predator",
+        "description": "Guayos de alta tracción para césped natural",
+        "price": 89.99,
         "category_id": 1,
-        "stock": 150,
-        "tags": ["sale", "popular"],
+        "stock": 45,
+        "brand": "Adidas",
+        "size": "42",
+        "color": "Negro/Rojo",
+        "gender": "men",
+        "tags": ["guayos", "futbol", "adidas", "cesped"],
         "created_at": datetime(2024, 2, 1, 10, 0, 0)
     },
     3: {
         "id": 3,
-        "name": "Python Crash Course",
-        "description": "A hands-on, project-based introduction to programming",
-        "price": 39.99,
-        "category_id": 2,
-        "stock": 75,
-        "tags": ["bestseller", "programming"],
+        "name": "Zapatillas Nike Air Zoom Pegasus",
+        "description": "Zapatillas de running con amortiguación Zoom Air",
+        "price": 129.99,
+        "category_id": 3,
+        "stock": 60,
+        "brand": "Nike",
+        "size": "40",
+        "color": "Azul/Blanco",
+        "gender": "unisex",
+        "tags": ["zapatillas", "running", "nike", "amortiguacion"],
         "created_at": datetime(2024, 1, 20, 14, 0, 0)
     },
     4: {
         "id": 4,
-        "name": "FastAPI Modern Guide",
-        "description": "Complete guide to building APIs with FastAPI",
-        "price": 49.99,
-        "category_id": 2,
-        "stock": 50,
-        "tags": ["new", "programming", "web"],
+        "name": "Mancuernas Ajustables PowerBlock",
+        "description": "Set de mancuernas ajustables de 2 a 32 kg",
+        "price": 299.99,
+        "category_id": 4,
+        "stock": 20,
+        "brand": "PowerBlock",
+        "size": "2-32kg",
+        "color": "Negro",
+        "gender": "unisex",
+        "tags": ["mancuernas", "gym", "pesas", "ajustable"],
         "created_at": datetime(2024, 3, 1, 8, 0, 0)
     },
     5: {
         "id": 5,
-        "name": "Classic T-Shirt",
-        "description": "100% cotton comfortable t-shirt",
-        "price": 24.99,
-        "category_id": 3,
-        "stock": 200,
-        "tags": ["popular", "basics"],
+        "name": "Traje de Baño Speedo Endurance",
+        "description": "Traje de baño de competición resistente al cloro",
+        "price": 54.99,
+        "category_id": 5,
+        "stock": 35,
+        "brand": "Speedo",
+        "size": "M",
+        "color": "Azul Marino",
+        "gender": "men",
+        "tags": ["natacion", "speedo", "competicion", "resistente"],
         "created_at": datetime(2024, 2, 15, 11, 0, 0)
     },
     6: {
         "id": 6,
-        "name": "Desk Lamp LED",
-        "description": "Adjustable LED desk lamp with dimmer",
-        "price": 45.99,
-        "category_id": 4,
-        "stock": 80,
-        "tags": ["new", "energy-efficient"],
+        "name": "Casco Ciclismo Giro Agilis",
+        "description": "Casco aerodinámico con ventilación optimizada MIPS",
+        "price": 149.99,
+        "category_id": 6,
+        "stock": 25,
+        "brand": "Giro",
+        "size": "L",
+        "color": "Rojo Mate",
+        "gender": "unisex",
+        "tags": ["casco", "ciclismo", "giro", "mips", "seguridad"],
         "created_at": datetime(2024, 2, 20, 16, 0, 0)
     },
     7: {
         "id": 7,
-        "name": "Mechanical Keyboard",
-        "description": "RGB mechanical keyboard with Cherry MX switches",
-        "price": 149.99,
-        "category_id": 1,
+        "name": "Pelota de Baloncesto Spalding",
+        "description": "Pelota oficial NBA para interiores y exteriores",
+        "price": 49.99,
+        "category_id": 2,
         "stock": 0,
-        "tags": ["gaming", "premium"],
+        "brand": "Spalding",
+        "size": "7",
+        "color": "Naranja",
+        "gender": "unisex",
+        "tags": ["baloncesto", "spalding", "nba", "oficial"],
         "created_at": datetime(2024, 3, 5, 9, 0, 0)
     },
     8: {
         "id": 8,
-        "name": "Garden Tools Set",
-        "description": "Complete set of essential garden tools",
-        "price": 79.99,
+        "name": "Camiseta Compresión Under Armour",
+        "description": "Camiseta de compresión HeatGear para entrenamiento intenso",
+        "price": 34.99,
         "category_id": 4,
-        "stock": 30,
-        "tags": ["sale", "outdoor"],
+        "stock": 100,
+        "brand": "Under Armour",
+        "size": "M",
+        "color": "Negro",
+        "gender": "men",
+        "tags": ["camiseta", "compresion", "gym", "under-armour"],
         "created_at": datetime(2024, 3, 10, 10, 0, 0)
+    },
+    9: {
+        "id": 9,
+        "name": "Gafas Natación Aqua Sphere Kayenne",
+        "description": "Gafas de natación con lente panorámica antifog",
+        "price": 29.99,
+        "category_id": 5,
+        "stock": 50,
+        "brand": "Aqua Sphere",
+        "size": "única",
+        "color": "Negro/Transparente",
+        "gender": "unisex",
+        "tags": ["gafas", "natacion", "antifog", "aquasphere"],
+        "created_at": datetime(2024, 3, 12, 9, 0, 0)
+    },
+    10: {
+        "id": 10,
+        "name": "Leggings Running Mujer Nike Epic",
+        "description": "Mallas de compresión con bolsillos y tecnología Dri-FIT",
+        "price": 59.99,
+        "category_id": 3,
+        "stock": 70,
+        "brand": "Nike",
+        "size": "S",
+        "color": "Morado",
+        "gender": "women",
+        "tags": ["leggings", "running", "mujer", "nike", "dri-fit"],
+        "created_at": datetime(2024, 3, 15, 11, 0, 0)
     },
 }
 
-next_product_id = 9
+next_product_id = 11
 
 
 # ============================================
@@ -135,7 +213,6 @@ next_product_id = 9
 # ============================================
 
 def get_next_category_id() -> int:
-    """Obtener y incrementar ID de categoría"""
     global next_category_id
     current = next_category_id
     next_category_id += 1
@@ -143,7 +220,6 @@ def get_next_category_id() -> int:
 
 
 def get_next_product_id() -> int:
-    """Obtener y incrementar ID de producto"""
     global next_product_id
     current = next_product_id
     next_product_id += 1

@@ -1,37 +1,48 @@
 """
-API de Catálogo de Productos - Main
-===================================
+Tienda de Equipamiento Deportivo - API
+======================================
 
-Punto de entrada de la aplicación.
+API REST para catálogo de equipamiento deportivo con búsqueda avanzada.
 """
 
 from fastapi import FastAPI
 from routers import categories, products
 
 app = FastAPI(
-    title="API de Catálogo de Productos",
-    description="API completa con CRUD, filtrado, paginación y ordenamiento",
+    title="SPORTYK RETAIL",
+    description="""
+API para gestión de catálogo de equipamiento deportivo.
+
+## Funcionalidades
+- **CRUD completo** de categorías y productos
+- **Filtros avanzados**: marca, talla, género, precio, stock, tags
+- **Búsqueda full-text** en nombre y descripción
+- **Paginación** y **ordenamiento** configurable
+- **Estadísticas** por categoría deportiva
+    """,
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
 )
 
-# Incluir routers
 app.include_router(categories.router)
 app.include_router(products.router)
 
 
 @app.get("/", tags=["Root"])
 async def root():
-    """Endpoint raíz"""
     return {
-        "message": "API de Catálogo de Productos",
+        "message": "🏅 Sportyk Retail API",
         "docs": "/docs",
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "endpoints": {
+            "categories": "/categories",
+            "products": "/products",
+            "stats": "/products/stats"
+        }
     }
 
 
 @app.get("/health", tags=["Root"])
 async def health_check():
-    """Health check"""
-    return {"status": "healthy"}
+    return {"status": "healthy", "service": "Tienda Deportiva API"}
