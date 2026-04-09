@@ -1,70 +1,134 @@
 """
-Task Manager API - Simulación de Base de Datos
+Tienda Deportiva API - Simulación de Base de Datos
 Semana 04 - Proyecto
 
-Base de datos en memoria para el proyecto.
+Base de datos en memoria para pedidos de equipamiento deportivo.
 """
 
 from datetime import datetime
-from models import TaskStatus, TaskPriority
+from models import OrderStatus, ProductCategory, PaymentStatus
 
 
 # Simulated database (in-memory)
-tasks_db: dict[int, dict] = {}
-task_id_counter: int = 0
+orders_db: dict[int, dict] = {}
+order_id_counter: int = 0
 
 
 def get_next_id() -> int:
-    """Generate next task ID"""
-    global task_id_counter
-    task_id_counter += 1
-    return task_id_counter
+    """Generate next order ID"""
+    global order_id_counter
+    order_id_counter += 1
+    return order_id_counter
+
+
+def generate_order_code(order_id: int) -> str:
+    """Generate a unique order code like ORD-YYYYMMDD-XXX"""
+    today = datetime.now().strftime("%Y%m%d")
+    return f"ORD-{today}-{order_id:03d}"
 
 
 def seed_database() -> None:
-    """Seed database with sample tasks"""
-    global tasks_db, task_id_counter
-    
-    sample_tasks = [
+    """Seed database with sample orders"""
+    global orders_db, order_id_counter
+
+    sample_orders = [
         {
-            "title": "Learn FastAPI basics",
-            "description": "Complete the first 3 weeks of bootcamp",
-            "status": TaskStatus.completed,
-            "priority": TaskPriority.high,
+            "customer_name": "Carlos Rodríguez",
+            "customer_email": "carlos@example.com",
+            "product_name": "Zapatillas Nike Air Zoom Pegasus",
+            "product_category": ProductCategory.running,
+            "quantity": 1,
+            "unit_price": 129.99,
+            "status": OrderStatus.delivered,
+            "payment_status": PaymentStatus.paid,
+            "shipping_address": "Calle 100 #15-20, Bogotá, Colombia",
+            "notes": "Talla 42, color negro",
         },
         {
-            "title": "Implement response models",
-            "description": "Practice with Pydantic schemas",
-            "status": TaskStatus.in_progress,
-            "priority": TaskPriority.high,
+            "customer_name": "Ana Martínez",
+            "customer_email": "ana@example.com",
+            "product_name": "Bicicleta Trek FX 3",
+            "product_category": ProductCategory.cycling,
+            "quantity": 1,
+            "unit_price": 899.00,
+            "status": OrderStatus.shipped,
+            "payment_status": PaymentStatus.paid,
+            "shipping_address": "Carrera 7 #32-10, Medellín, Colombia",
+            "notes": None,
         },
         {
-            "title": "Study error handling",
-            "description": None,
-            "status": TaskStatus.pending,
-            "priority": TaskPriority.medium,
+            "customer_name": "Luis García",
+            "customer_email": "luis@example.com",
+            "product_name": "Gafas Speedo Futura Biofuse",
+            "product_category": ProductCategory.swimming,
+            "quantity": 2,
+            "unit_price": 34.99,
+            "status": OrderStatus.confirmed,
+            "payment_status": PaymentStatus.paid,
+            "shipping_address": "Av. El Dorado #68-72, Bogotá, Colombia",
+            "notes": "Color azul marino",
         },
         {
-            "title": "Write API documentation",
-            "description": "Use OpenAPI and Swagger UI",
-            "status": TaskStatus.pending,
-            "priority": TaskPriority.low,
+            "customer_name": "María López",
+            "customer_email": "maria@example.com",
+            "product_name": "Mancuernas Bowflex SelectTech 552",
+            "product_category": ProductCategory.gym,
+            "quantity": 1,
+            "unit_price": 399.00,
+            "status": OrderStatus.pending,
+            "payment_status": PaymentStatus.unpaid,
+            "shipping_address": "Calle 85 #11-92, Bogotá, Colombia",
+            "notes": None,
+        },
+        {
+            "customer_name": "Pedro Sánchez",
+            "customer_email": "pedro@example.com",
+            "product_name": "Balón Adidas Champions League",
+            "product_category": ProductCategory.team_sports,
+            "quantity": 3,
+            "unit_price": 49.99,
+            "status": OrderStatus.pending,
+            "payment_status": PaymentStatus.unpaid,
+            "shipping_address": "Cra 15 #93-75, Bogotá, Colombia",
+            "notes": "Para torneo escolar",
         },
     ]
-    
-    for task_data in sample_tasks:
-        task_id = get_next_id()
+
+    for order_data in sample_orders:
+        order_id = get_next_id()
         now = datetime.now()
-        
-        tasks_db[task_id] = {
-            "id": task_id,
-            "title": task_data["title"],
-            "description": task_data["description"],
-            "status": task_data["status"],
-            "priority": task_data["priority"],
+        total = order_data["quantity"] * order_data["unit_price"]
+
+        confirmed_at = None
+        shipped_at = None
+        delivered_at = None
+
+        if order_data["status"] in [OrderStatus.confirmed, OrderStatus.shipped, OrderStatus.delivered]:
+            confirmed_at = now
+        if order_data["status"] in [OrderStatus.shipped, OrderStatus.delivered]:
+            shipped_at = now
+        if order_data["status"] == OrderStatus.delivered:
+            delivered_at = now
+
+        orders_db[order_id] = {
+            "id": order_id,
+            "order_code": generate_order_code(order_id),
+            "customer_name": order_data["customer_name"],
+            "customer_email": order_data["customer_email"],
+            "product_name": order_data["product_name"],
+            "product_category": order_data["product_category"],
+            "quantity": order_data["quantity"],
+            "unit_price": order_data["unit_price"],
+            "total_price": round(total, 2),
+            "status": order_data["status"],
+            "payment_status": order_data["payment_status"],
+            "shipping_address": order_data["shipping_address"],
+            "notes": order_data["notes"],
             "created_at": now,
             "updated_at": None,
-            "completed_at": now if task_data["status"] == TaskStatus.completed else None,
+            "confirmed_at": confirmed_at,
+            "shipped_at": shipped_at,
+            "delivered_at": delivered_at,
         }
 
 

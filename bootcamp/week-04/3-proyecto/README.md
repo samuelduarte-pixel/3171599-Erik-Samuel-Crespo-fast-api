@@ -1,4 +1,4 @@
-# 🚀 Proyecto Semana 04: API con Responses y Manejo de Errores
+ 🚀 Proyecto Semana 04: API con Responses y Manejo de Errores
 
 ## 🏛️ Tu Dominio Asignado
 

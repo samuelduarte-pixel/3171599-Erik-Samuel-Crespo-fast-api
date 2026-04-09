@@ -1,29 +1,15 @@
 """
-Task Manager API - Excepciones Personalizadas
+Tienda Deportiva API - Excepciones Personalizadas
 Semana 04 - Proyecto
-
-Define excepciones de negocio y handlers.
 """
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
 
-# ============================================
-# CUSTOM EXCEPTIONS - TODO: Completar
-# ============================================
+class SportStoreException(Exception):
+    """Base exception for Sport Store API."""
 
-class TaskManagerException(Exception):
-    """
-    Base exception for Task Manager.
-    
-    TODO: Implementar:
-    - code: str (código de error)
-    - message: str (mensaje descriptivo)
-    - status_code: int (HTTP status)
-    - details: dict | None
-    """
-    
     def __init__(
         self,
         code: str,
@@ -38,76 +24,75 @@ class TaskManagerException(Exception):
         super().__init__(message)
 
 
-class TaskNotFoundError(TaskManagerException):
-    """
-    Task not found exception.
-    
-    TODO: Implementar constructor que:
-    - Reciba task_id: int
-    - Llame a super() con code="TASK_NOT_FOUND"
-    - status_code=404
-    """
-    
-    def __init__(self, task_id: int):
-        # TODO: Implementar
+class OrderNotFoundError(SportStoreException):
+    """Order not found exception."""
+
+    def __init__(self, order_id: int):
         super().__init__(
-            code="TASK_NOT_FOUND",
-            message=f"Task with id {task_id} not found",
+            code="ORDER_NOT_FOUND",
+            message=f"Order with id {order_id} not found",
             status_code=404
         )
 
 
-class InvalidStatusTransitionError(TaskManagerException):
-    """
-    Invalid status transition exception.
-    
-    TODO: Implementar constructor que:
-    - Reciba current_status y target_status
-    - code="INVALID_STATUS_TRANSITION"
-    - status_code=400
-    """
-    
+class InvalidStatusTransitionError(SportStoreException):
+    """Invalid status transition exception."""
+
     def __init__(self, current_status: str, target_status: str):
-        # TODO: Implementar
-        pass
+        super().__init__(
+            code="INVALID_STATUS_TRANSITION",
+            message=f"Cannot transition order from '{current_status}' to '{target_status}'",
+            status_code=400,
+            details={
+                "current_status": current_status,
+                "target_status": target_status,
+                "allowed_transitions": {
+                    "pending": ["confirmed", "cancelled"],
+                    "confirmed": ["shipped", "cancelled"],
+                    "shipped": ["delivered"],
+                    "delivered": [],
+                    "cancelled": []
+                }
+            }
+        )
 
 
-class DuplicateTaskError(TaskManagerException):
-    """
-    Duplicate task exception.
-    
-    TODO: Implementar constructor que:
-    - Reciba title: str
-    - code="DUPLICATE_TASK"
-    - status_code=409
-    """
-    
-    def __init__(self, title: str):
-        # TODO: Implementar
-        pass
+class DuplicateOrderError(SportStoreException):
+    """Duplicate order exception."""
+
+    def __init__(self, customer_email: str, product_name: str):
+        super().__init__(
+            code="DUPLICATE_ORDER",
+            message=f"An active order for '{product_name}' already exists for '{customer_email}'",
+            status_code=409,
+            details={
+                "customer_email": customer_email,
+                "product_name": product_name
+            }
+        )
+
+
+class InvalidPaymentTransitionError(SportStoreException):
+    """Invalid payment status transition."""
+
+    def __init__(self, current: str, target: str):
+        super().__init__(
+            code="INVALID_PAYMENT_TRANSITION",
+            message=f"Cannot change payment from '{current}' to '{target}'",
+            status_code=400,
+            details={"current_payment_status": current, "target_payment_status": target}
+        )
 
 
 # ============================================
-# EXCEPTION HANDLERS - TODO: Completar
+# EXCEPTION HANDLERS
 # ============================================
 
-async def task_manager_exception_handler(
+async def sport_store_exception_handler(
     request: Request,
-    exc: TaskManagerException
+    exc: SportStoreException
 ) -> JSONResponse:
-    """
-    Handler para TaskManagerException.
-    
-    TODO: Retornar JSONResponse con formato:
-    {
-        "error": {
-            "code": exc.code,
-            "message": exc.message,
-            "details": exc.details
-        }
-    }
-    """
-    # TODO: Implementar
+    """Handler para SportStoreException."""
     return JSONResponse(
         status_code=exc.status_code,
         content={
